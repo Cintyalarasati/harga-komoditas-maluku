@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Tentang Pengelola - Harga Komoditas Maluku</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Bagian header -->
+    <header>
+        <h1>Harga Komoditas Maluku</h1>
+        <p>Mengenal pengelola dan pengembang website.</p>
+    </header>
+
+    <!-- Menu navigasi -->
+    <nav>
+        <a href="index.html">Beranda</a>
+        <a href="harga.php">Harga Komoditas</a>
+        <a href="komoditas.html">Jenis Komoditas</a>
+        <a href="tentang.html">Tentang Pengelola</a>
+        <a href="kontak.html">Kontak</a>
+    </nav>
+
+    <!-- Konten utama -->
+    <main>
+        <section class="profil-developer">
+
+            <!-- Kolom foto dan identitas -->
+            <div class="profil-identitas">
+                <div class="foto-profil">
+                    <img
+                        src="images/profil.jpg"
+                        alt="Foto pengembang website"
+                        id="foto-profil"
+                    >
+                </div>
+
+                <h2>Cintya Larasati Tunjungsari</h2>
+                <h3>Web Developer</h3>
+                <p>Belajar • Berkembang • Memberi Manfaat</p>
+            </div>
+
+            <!-- Kolom deskripsi pengelola -->
+            <div class="profil-deskripsi">
+                <h2>Tentang Saya</h2>
+
+                <p>
+                    Halo! Saya adalah pengembang website
+                    Harga Komoditas Maluku.
+                </p>
+
+                <p>
+                    Website ini saya bangun sebagai proyek pembelajaran
+                    sekaligus upaya untuk membantu petani, pedagang,
+                    dan pengepul mendapatkan informasi komoditas
+                    perkebunan di Maluku.
+                </p>
+
+                <p>
+                    Saya ingin terus belajar dan mengembangkan kemampuan
+                    di bidang pemrograman web agar website ini semakin
+                    bermanfaat bagi masyarakat.
+                </p>
+
+                <!-- Informasi kontak pengelola -->
+                <div class="kontak-developer">
+
+                    <div class="item-kontak">
+                        <span class="ikon-kontak">&#9993;</span>
+                        <div>
+                            <h4>Email</h4>
+                            <p>ara7832002@gmail.com</p>
+                        </div>
+                    </div>
+
+                    <div class="item-kontak">
+                        <span class="ikon-kontak">&#9742;</span>
+                        <div>
+                            <h4>No. HP</h4>
+                            <p>08xxxxxxxxxx</p>
+                        </div>
+                    </div>
+
+                    <div class="item-kontak">
+                        <span class="ikon-kontak">&#8982;</span>
+                        <div>
+                            <h4>Alamat</h4>
+                            <p>
+                                Kab SBB, Kec Kairatu, Kamal,
+                                Maluku, Indonesia
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Tampilan foto saat diklik -->
+    <div
+        id="modal-foto"
+        class="modal-foto"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Foto profil ukuran besar"
+    >
+        <button
+            type="button"
+            id="tutup-foto"
+            class="tutup-foto"
+            aria-label="Tutup foto"
+        >&times;</button>
+
+        <img
+            src="images/profil.jpg"
+            alt="Foto profil ukuran besar"
+            id="foto-besar"
+        >
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Harga Komoditas Maluku</p>
+    </footer>
+
+    <!-- JavaScript untuk fitur foto profil -->
+    <script>
+        const fotoProfil = document.getElementById("foto-profil");
+        const modalFoto = document.getElementById("modal-foto");
+        const fotoBesar = document.getElementById("foto-besar");
+        const tombolTutup = document.getElementById("tutup-foto");
+
+        // Klik foto profil untuk menampilkan foto besar
+        fotoProfil.addEventListener("click", function () {
+            fotoBesar.src = fotoProfil.src;
+            modalFoto.style.display = "flex";
+        });
+
+        // Klik tombol X untuk menutup foto
+        tombolTutup.addEventListener("click", function () {
+            modalFoto.style.display = "none";
+        });
+
+        // Klik area gelap di luar foto untuk menutupnya
+        modalFoto.addEventListener("click", function (event) {
+            if (event.target === modalFoto) {
+                modalFoto.style.display = "none";
+            }
+        });
+
+        // Tekan Escape untuk menutup foto
+        document.addEventListener("keydown", function (event) {
+            if (event.key === "Escape") {
+                modalFoto.style.display = "none";
+            }
+        });
+    </script>
+
+</body>
+</html>

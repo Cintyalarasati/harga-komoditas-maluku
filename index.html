@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Harga Komoditas Maluku</title>
+
+   <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Bagian kepala website -->
+    <header>
+        <h1>Harga Komoditas Maluku</h1>
+        <p>Informasi harga hasil perkebunan di Maluku.</p>
+    </header>
+
+    <!-- Menu navigasi -->
+    <nav>
+        <a href="index.html">Beranda</a>
+        <a href="harga.php">Harga Komoditas</a>
+        <a href="komoditas.html">Jenis Komoditas</a>
+        <a href="tentang.html">Tentang Pengelola</a>
+        <a href="kontak.html">Kontak</a>
+        <a href="login.php">Pengelola</a>
+    </nav>
+
+    <!-- Isi utama beranda -->
+    <main>
+
+        <!-- Bagian pengenalan -->
+        <section class="pengenalan hero-beranda">
+            <div class="hero-teks">
+                <span class="label-hero">🌿 HARGA KOMODITAS MALUKU</span>
+
+                <h2>
+                    Kenali Harga,<br>
+                    <span>Tentukan Peluang.</span>
+                </h2>
+
+                <p>
+                    Informasi harga komoditas perkebunan Maluku untuk membantu
+                    petani, pedagang, dan pengepul dalam mengambil keputusan
+                    yang lebih baik.
+                </p>
+
+                <div class="hero-tombol">
+                    <a href="komoditas.html" class="tombol-utama">
+                        Jelajahi Komoditas
+                    </a>
+                </div>
+            </div>
+
+            <div class="hero-gambar">
+                <img src="images/hero-kopra.jpg" alt="Kopra kering">
+                <img src="images/hero-cengkeh.jpg" alt="Cengkeh kering">
+                <img src="images/hero-pala.jpg" alt="Biji pala">
+            </div>
+        </section>
+
+        <!-- Pilihan wilayah -->
+        <section class="pencarian-wilayah">
+            <h2>Cari Harga Berdasarkan Wilayah</h2>
+
+            <p>
+                Pilih kabupaten atau kota untuk melihat informasi harga
+                komoditas di wilayah tersebut.
+            </p>
+
+            <label for="wilayah">Kabupaten / Kota</label>
+
+            <select id="wilayah">
+                <option value="">Pilih wilayah</option>
+                <option value="Ambon">Kota Ambon</option>
+                <option value="Tual">Kota Tual</option>
+                <option value="Maluku Tengah">Kabupaten Maluku Tengah</option>
+                <option value="Maluku Tenggara">Kabupaten Maluku Tenggara</option>
+                <option value="Kepulauan Tanimbar">Kabupaten Kepulauan Tanimbar</option>
+                <option value="Buru">Kabupaten Buru</option>
+                <option value="Buru Selatan">Kabupaten Buru Selatan</option>
+                <option value="Kepulauan Aru">Kabupaten Kepulauan Aru</option>
+                <option value="Seram Bagian Barat">Kabupaten Seram Bagian Barat</option>
+                <option value="Seram Bagian Timur">Kabupaten Seram Bagian Timur</option>
+                <option value="Maluku Barat Daya">Kabupaten Maluku Barat Daya</option>
+            </select>
+        </section>
+
+        <!-- Tabel harga komoditas -->
+        <section class="harga-terbaru">
+
+            <!-- Pencarian komoditas -->
+            <div class="pencarian-komoditas">
+                <label for="cari-komoditas">Cari komoditas</label>
+
+                <input
+                    type="text"
+                    id="cari-komoditas"
+                    placeholder="Contoh: Cengkeh"
+                >
+
+                <button type="button" id="reset-pencarian">
+                    Tampilkan Semua
+                </button>
+            </div>
+
+            <h2>Harga Komoditas Terbaru</h2>
+
+            <p>
+                Pilih wilayah untuk melihat harga komoditas yang tersedia.
+            </p>
+
+            <p class="catatan" id="status-harga">
+                Silakan pilih wilayah untuk melihat informasi harga.
+            </p>
+
+            <div class="tabel-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Komoditas</th>
+                            <th>Wilayah</th>
+                            <th>Harga per Kg</th>
+                            <th>Pembaruan</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr>
+                            <td>Kopra</td>
+                            <td class="wilayah-harga">Belum dipilih</td>
+                            <td>Belum tersedia</td>
+                            <td>—</td>
+                        </tr>
+
+                        <tr>
+                            <td>Biji Kakao</td>
+                            <td class="wilayah-harga">Belum dipilih</td>
+                            <td>Belum tersedia</td>
+                            <td>—</td>
+                        </tr>
+
+                        <tr>
+                            <td>Cengkeh</td>
+                            <td class="wilayah-harga">Belum dipilih</td>
+                            <td>Belum tersedia</td>
+                            <td>—</td>
+                        </tr>
+
+                        <tr>
+                            <td>Pala</td>
+                            <td class="wilayah-harga">Belum dipilih</td>
+                            <td>Belum tersedia</td>
+                            <td>—</td>
+                        </tr>
+
+                        <tr>
+                            <td>Bunga Pala</td>
+                            <td class="wilayah-harga">Belum dipilih</td>
+                            <td>Belum tersedia</td>
+                            <td>—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Informasi website -->
+        <section class="informasi-pembaruan">
+            <h2>Informasi Website</h2>
+
+            <p>
+                Website Harga Komoditas Maluku dikelola secara mandiri
+                untuk membantu pedagang memperoleh informasi harga
+                hasil perkebunan.
+            </p>
+
+            <p>
+                <strong>Status data:</strong>
+                Harga komoditas tersedia untuk Seram Bagian Barat (SBB).
+                Wilayah lain akan ditambahkan setelah datanya tersedia.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- Bagian bawah website -->
+    <footer>
+        <p>&copy; 2026 Harga Komoditas Maluku</p>
+    </footer>
+
+   <script src="js/script.js"></script>
+</body>
+</html>

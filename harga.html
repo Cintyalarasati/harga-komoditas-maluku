@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harga Komoditas - Harga Komoditas Maluku</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>Harga Komoditas Maluku</h1>
+        <p>Informasi harga hasil perkebunan di Maluku.</p>
+    </header>
+
+    <nav>
+        <a href="index.html">Beranda</a>
+        <a href="harga.php">Harga Komoditas</a>
+        <a href="komoditas.html">Jenis Komoditas</a>
+        <a href="tentang.html">Tentang Pengelola</a>
+        <a href="kontak.html">Kontak</a>
+    </nav>
+
+    <main>
+        <section class="harga-terbaru">
+            <h2>Informasi Harga Komoditas</h2>
+
+            <p>
+                Pilih wilayah untuk melihat informasi harga
+                komoditas perkebunan yang tersedia.
+            </p>
+
+            <div class="pencarian-wilayah">
+                <label for="wilayah-harga">Kabupaten / Kota</label>
+
+                
+<select id="wilayah-harga">
+    <option value="">Pilih wilayah</option>
+    <option value="ambon">Kota Ambon</option>
+    <option value="tual">Kota Tual</option>
+    <option value="malten">Kabupaten Maluku Tengah</option>
+    <option value="maltra">Kabupaten Maluku Tenggara</option>
+    <option value="kkt">Kabupaten Kepulauan Tanimbar</option>
+    <option value="buru">Kabupaten Buru</option>
+    <option value="bursel">Kabupaten Buru Selatan</option>
+    <option value="kep_ar">Kabupaten Kepulauan Aru</option>
+    <option value="sbb">Kabupaten Seram Bagian Barat</option>
+    <option value="sbt">Kabupaten Seram Bagian Timur</option>
+    <option value="malbar">Kabupaten Maluku Barat Daya</option>
+</select>
+
+            </div>
+
+            <div id="informasi-pembaruan" class="informasi-pembaruan" hidden>
+                <h3>Harga Komoditas SBB</h3>
+                <p>Wilayah: Seram Bagian Barat, Maluku</p>
+                <p>Pembaruan data: 24 Oktober 2026</p>
+            </div>
+
+            <div id="daftar-harga" class="daftar-komoditas kartu-harga" hidden>
+                <div class="item-komoditas">
+                    <h4>Kopra</h4>
+                    <p>Harga per kilogram</p>
+                    <p class="nilai-harga">Rp11.500</p>
+                </div>
+
+                <div class="item-komoditas">
+                    <h4>Biji Kakao</h4>
+                    <p>Harga per kilogram</p>
+                    <p class="nilai-harga">Rp60.000</p>
+                </div>
+
+                <div class="item-komoditas">
+                    <h4>Cengkeh</h4>
+                    <p>Harga per kilogram</p>
+                    <p class="nilai-harga">Rp110.000</p>
+                </div>
+
+                <div class="item-komoditas">
+                    <h4>Pala</h4>
+                    <p>Harga per kilogram</p>
+                    <p class="nilai-harga">Rp60.000</p>
+                </div>
+
+                <div class="item-komoditas">
+                    <h4>Bunga Pala</h4>
+                    <p>Harga per kilogram</p>
+                    <p class="nilai-harga">Rp120.000</p>
+                </div>
+            </div>
+
+            <div id="status-wilayah" class="catatan-harga" hidden></div>
+
+            <div class="catatan-harga">
+                <h3>Informasi Harga</h3>
+                <p>
+                    Harga dimasukkan oleh pengelola berdasarkan
+                    informasi perdagangan setempat di Seram
+                    Bagian Barat. Harga dapat berbeda menurut
+                    kualitas komoditas dan lokasi transaksi.
+                </p>
+                <p>
+                    Untuk informasi lebih lanjut, silakan
+                    hubungi pengelola melalui halaman Kontak.
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Harga Komoditas Maluku</p>
+    </footer>
+
+  
+<script>
+    const pilihanWilayah = document.getElementById("wilayah-harga");
+    const daftarHarga = document.getElementById("daftar-harga");
+    const informasiPembaruan = document.getElementById("informasi-pembaruan");
+    const statusWilayah = document.getElementById("status-wilayah");
+
+    pilihanWilayah.addEventListener("change", function () {
+        const wilayah = pilihanWilayah.value;
+
+        // Sembunyikan tampilan sebelumnya
+        daftarHarga.hidden = true;
+        informasiPembaruan.hidden = true;
+        statusWilayah.hidden = true;
+        statusWilayah.innerHTML = "";
+
+        // Jika memilih SBB, tampilkan harga
+        if (wilayah === "sbb") {
+            daftarHarga.hidden = false;
+            informasiPembaruan.hidden = false;
+        }
+
+        // Jika memilih wilayah lain, tampilkan kotak informasi
+        else if (wilayah !== "") {
+            statusWilayah.innerHTML = `
+                <h3>Harga Belum Tersedia</h3>
+                <p>
+                    Data harga untuk wilayah ini belum tersedia.
+                    Saat ini, informasi harga yang tersedia baru
+                    untuk Seram Bagian Barat (SBB).
+                </p>
+            `;
+
+            statusWilayah.hidden = false;
+        }
+    });
+</script>
+ 
+</body>
+</html>

@@ -1,0 +1,168 @@
+/* ===== Pengaturan dasar ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+
+    /* Latar belakang pemandangan */
+    background:
+        linear-gradient(
+            rgba(15, 23, 42, 0.35),
+            rgba(15, 23, 42, 0.65)
+        ),
+        url("https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=1920&q=85");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+/* ===== Area login ===== */
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 36px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 18px;
+
+    background: rgba(15, 23, 42, 0.42);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+/* ===== Judul ===== */
+.login-header {
+    margin-bottom: 28px;
+    text-align: center;
+}
+
+.login-header h1 {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: 30px;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+}
+
+.login-header p {
+    margin: 0;
+    color: #e2e8f0;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* ===== Form ===== */
+.login-container form {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+/* Label input */
+.login-container label {
+    display: block;
+    margin: 18px 0 8px;
+    color: #f1f5f9;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Kolom username dan password */
+.login-container input[type="text"],
+.login-container input[type="password"] {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    margin: 0;
+    padding: 12px 14px;
+
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: 8px;
+    outline: none;
+
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 15px;
+
+    transition: border-color 0.25s, background 0.25s;
+}
+
+/* Warna teks saat mengetik */
+.login-container input::placeholder {
+    color: #cbd5e1;
+}
+
+/* Efek ketika kolom dipilih */
+.login-container input[type="text"]:focus,
+.login-container input[type="password"]:focus {
+    border-color: #ffffff;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Tombol masuk ===== */
+.login-container button[type="submit"] {
+    display: block;
+    width: 100%;
+    min-height: 46px;
+    margin-top: 28px;
+    padding: 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: #ffffff;
+    color: #334155;
+
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+
+    transition: background 0.25s, transform 0.25s;
+}
+
+.login-container button[type="submit"]:hover {
+    background: #e2e8f0;
+    transform: translateY(-2px);
+}
+
+/* ===== Pesan kesalahan login ===== */
+.login-container .pesan-error {
+    margin: 0 0 18px;
+    padding: 12px;
+    border-radius: 8px;
+    background: rgba(127, 29, 29, 0.8);
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* ===== Tampilan ponsel ===== */
+@media (max-width: 480px) {
+    body {
+        padding: 18px;
+    }
+
+    .login-container {
+        padding: 28px 22px;
+    }
+
+    .login-header h1 {
+        font-size: 26px;
+    }
+}

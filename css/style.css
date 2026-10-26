@@ -1,0 +1,680 @@
+
+/* =====================================
+   1. PENGATURAN DASAR
+===================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f5;
+    color: #24332b;
+    line-height: 1.6;
+}
+
+h2 {
+    margin-top: 0;
+    color: #174c35;
+}
+
+/* =====================================
+   2. HEADER DAN MENU NAVIGASI
+===================================== */
+
+
+/* HEADER DENGAN GRADASI HIJAU DAN GAMBAR PULAU */
+header {
+    min-height: 200px;
+    padding: 35px 6%;
+    background-color: #174c35;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            #174c35 0%,
+            #174c35 30%,
+            rgba(23, 76, 53, 0.96) 42%,
+            rgba(23, 76, 53, 0.75) 55%,
+            rgba(23, 76, 53, 0.25) 72%,
+            rgba(23, 76, 53, 0.05) 100%
+        ),
+        url("images/pulau.jpg");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+header h1 {
+    margin: 0 0 8px;
+}
+
+header p {
+    margin: 0;
+    color: #ffffff;
+}
+
+/* MENU NAVIGASI */
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 6%;
+    background-color: #103b29;
+}
+
+nav a {
+    display: inline-block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+}
+
+nav a:visited {
+    color: white;
+}
+
+nav a:hover {
+    background-color: #2c684b;
+}
+
+
+/* =====================================
+   3. AREA UTAMA WEBSITE
+===================================== */
+
+main {
+    width: 90%;
+    max-width: 1100px;
+    margin: 30px auto;
+}
+
+.pengenalan,
+.harga-terbaru,
+.pencarian-wilayah {
+    margin-bottom: 22px;
+    padding: 24px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.catatan {
+    color: #8a611b;
+    font-size: 14px;
+}
+
+
+/* =====================================
+   4. PILIHAN WILAYAH
+===================================== */
+
+.pencarian-wilayah label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.pencarian-wilayah select {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px;
+    border: 1px solid #cbd5ce;
+    border-radius: 7px;
+    background-color: white;
+    font-size: 15px;
+}
+
+.pencarian-wilayah select:focus {
+    outline: 2px solid #47745d;
+    border-color: #174c35;
+}
+
+
+/* =====================================
+   5. TABEL HARGA KOMODITAS
+===================================== */
+
+.tabel-wrapper {
+    width: 100%;
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.tabel-wrapper table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.tabel-wrapper th,
+.tabel-wrapper td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #e2e8e4;
+    text-align: left;
+}
+
+.tabel-wrapper th {
+    background-color: #e7f1e9;
+    color: #174c35;
+    white-space: nowrap;
+}
+
+.tabel-wrapper tbody tr:hover {
+    background-color: #f6faf7;
+}
+
+
+/* =====================================
+   6. PENCARIAN DAN TOMBOL RESET
+===================================== */
+
+.pencarian-komoditas {
+    margin-bottom: 22px;
+}
+
+.pencarian-komoditas label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.pencarian-komoditas input {
+    width: 100%;
+    max-width: 500px;
+    padding: 12px;
+    border: 1px solid #cbd5ce;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+.pencarian-komoditas input:focus {
+    outline: 2px solid #47745d;
+    border-color: #174c35;
+}
+
+#reset-pencarian {
+    display: block;
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 7px;
+    background-color: #174c35;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#reset-pencarian:hover {
+    background-color: #2c684b;
+}
+
+
+/* =====================================
+   7. KARTU JENIS KOMODITAS
+===================================== */
+
+/* Tiga kolom pada layar komputer */
+.daftar-komoditas {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+    align-items: stretch;
+}
+
+/* Tampilan kartu */
+.item-komoditas {
+    min-width: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid #dce7df;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Gambar komoditas */
+.item-komoditas img {
+    display: block;
+    width: 100%;
+    height: 150px;
+    margin: 0;
+    object-fit: cover;
+}
+
+/* Nama komoditas */
+.item-komoditas h4 {
+    margin: 0;
+    padding: 10px 14px;
+    background-color: #174c35;
+    color: white;
+    font-size: 17px;
+}
+
+/* Deskripsi komoditas */
+.item-komoditas p {
+    margin: 0;
+    padding: 12px 14px 16px;
+    color: #526158;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* =====================================
+   8. INFORMASI PEMBARUAN
+===================================== */
+
+.informasi-pembaruan {
+    margin-bottom: 22px;
+    padding: 24px;
+    border-left: 5px solid #174c35;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.informasi-pembaruan h2 {
+    margin-bottom: 12px;
+}
+
+.informasi-pembaruan p {
+    margin-bottom: 10px;
+    color: #526158;
+}
+
+
+/* =====================================
+   9. FOOTER
+===================================== */
+
+footer {
+    padding: 20px;
+    color: #66736b;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+/* =====================================
+   10. TAMPILAN TABLET
+===================================== */
+
+@media (max-width: 800px) {
+    .daftar-komoditas {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+/* =====================================
+   11. TAMPILAN HP
+===================================== */
+
+@media (max-width: 600px) {
+    header {
+        padding: 24px 5%;
+    }
+
+    nav {
+        gap: 4px;
+        padding: 12px 5%;
+    }
+
+    nav a {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    main {
+        width: 94%;
+        margin-top: 20px;
+    }
+
+    .pengenalan,
+    .harga-terbaru,
+    .pencarian-wilayah {
+        padding: 18px;
+    }
+
+    .tabel-wrapper th,
+    .tabel-wrapper td {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .daftar-komoditas {
+        grid-template-columns: 1fr;
+    }
+
+    .item-komoditas img {
+        height: 190px;
+    }
+}
+
+/* =====================================
+   12. HALAMAN TENTANG PENGELOLA
+===================================== */
+
+.profil-developer {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: start;
+    gap: 30px;
+    margin-bottom: 25px;
+    padding: 30px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Foto dan identitas pengelola */
+.profil-identitas {
+    padding: 15px;
+    text-align: center;
+}
+
+.foto-profil img {
+    display: block;
+    width: 180px;
+    height: 180px;
+    margin: 0 auto;
+    object-fit: cover;
+    border: 4px solid #d1e7d8;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.profil-identitas h2 {
+    margin-top: 15px;
+    color: #14532d;
+}
+
+.profil-identitas h3 {
+    margin-bottom: 15px;
+    color: #15803d;
+}
+
+/* Deskripsi pengelola */
+.profil-deskripsi h2 {
+    margin-bottom: 15px;
+    color: #14532d;
+}
+
+.profil-deskripsi p {
+    margin-bottom: 15px;
+    line-height: 1.8;
+}
+
+/* =====================================
+   13. KONTAK PENGELOLA
+===================================== */
+
+.kontak-developer {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #d1e7d8;
+}
+
+.item-kontak {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.ikon-kontak {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background-color: #166534;
+    color: white;
+    font-size: 20px;
+}
+
+.item-kontak h4 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #14532d;
+}
+
+.item-kontak p {
+    margin-bottom: 0;
+    overflow-wrap: anywhere;
+}
+
+/* =====================================
+   14. MODAL FOTO PROFIL
+===================================== */
+
+/* Latar belakang gelap */
+.modal-foto {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Foto ukuran besar */
+.modal-foto img {
+    display: block;
+    width: auto;
+    height: auto;
+    max-width: 90%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+/* Tombol tutup X */
+.tutup-foto {
+    position: absolute;
+    top: 15px;
+    right: 25px;
+    padding: 0 8px;
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 42px;
+    line-height: 1.2;
+    cursor: pointer;
+}
+
+.tutup-foto:hover {
+    color: #d1e7d8;
+}
+
+/* =====================================
+   15. PENYESUAIAN LAYAR KECIL
+===================================== */
+
+@media (max-width: 800px) {
+    .kontak-developer {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .profil-developer {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .profil-identitas {
+        padding: 5px;
+    }
+
+    .foto-profil img {
+        width: 160px;
+        height: 160px;
+    }
+
+    .modal-foto {
+        padding: 15px;
+    }
+
+    .modal-foto img {
+        max-width: 95%;
+        max-height: 80vh;
+    }
+
+    .tutup-foto {
+        top: 10px;
+        right: 15px;
+    }
+}
+
+/* Tampilan pembuka Beranda */
+.hero-beranda {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 30px;
+    overflow: hidden;
+    background: linear-gradient(120deg, #ffffff, #e8f4ed);
+}
+
+
+.hero-teks h2 {
+    margin: 18px 0 16px;
+    color: #123f2e;
+    font-size: clamp(32px, 3.2vw, 46px);
+    font-weight: 800;
+    line-height: 1.12;
+    letter-spacing: -1.5px;
+}
+
+.hero-teks h2 span {
+    color: #26734d;
+}
+
+.label-hero {
+    display: inline-block;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background-color: #d9f1e1;
+    color: #174c35;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.hero-tombol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.hero-tombol a {
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.tombol-utama {
+    background-color: #174c35;
+    color: white;
+}
+
+.tombol-kedua {
+    border: 1px solid #174c35;
+    color: #174c35;
+}
+
+.hero-gambar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 10px;
+}
+
+.hero-gambar img {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 14px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+.hero-gambar img:nth-child(2) {
+    transform: translateY(-12px);
+}
+
+/* Penyesuaian layar kecil */
+@media (max-width: 800px) {
+    .hero-beranda {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-teks h2 {
+        font-size: 30px;
+    }
+
+    .hero-gambar img {
+        height: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-gambar {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .hero-gambar img:last-child {
+        display: none;
+    }
+}
+
+/* Memastikan elemen dengan atribut hidden tidak ditampilkan */
+[hidden] {
+    display: none !important;
+}
+
+/* Kotak informasi untuk wilayah yang belum memiliki harga */
+#status-wilayah {
+    background-color: #fff4dc;
+    color: #805b16;
+    border: 1px solid #f5dfae;
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 24px;
+}
+
+/* Judul di dalam kotak informasi */
+#status-wilayah h3 {
+    color: #805b16;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+/* Teks di dalam kotak informasi */
+#status-wilayah p {
+    color: #805b16;
+    margin-bottom: 0;
+}
+
+/* Tetap sembunyikan elemen yang memiliki atribut hidden */
+[hidden] {
+    display: none !important;
+}
