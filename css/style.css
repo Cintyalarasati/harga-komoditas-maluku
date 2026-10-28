@@ -41,8 +41,8 @@ header {
             rgba(23, 76, 53, 0.25) 72%,
             rgba(23, 76, 53, 0.05) 100%
         ),
-        url("images/pulau.jpg");
-
+       url("../images/pulau.jpg");
+       
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
