@@ -7,10 +7,25 @@ const daftarBaris = document.querySelectorAll(
     ".tabel-wrapper tbody tr"
 );
 
-// Menyimpan data harga yang berhasil diambil dari database
+// Menyimpan data harga berdasarkan wilayah.
 let dataHarga = {};
 
-// Mengubah format tanggal menjadi format Indonesia
+// Mengubah kode wilayah menjadi nama yang digunakan database.
+const daftarWilayah = {
+    ambon: "Kota Ambon",
+    tual: "Kota Tual",
+    malten: "Maluku Tengah",
+    maltra: "Maluku Tenggara",
+    kkt: "Kepulauan Tanimbar",
+    buru: "Buru",
+    bursel: "Buru Selatan",
+    kep_ar: "Kepulauan Aru",
+    sbb: "Seram Bagian Barat",
+    sbt: "Seram Bagian Timur",
+    malbar: "Maluku Barat Daya"
+};
+
+// Mengubah format tanggal menjadi format Indonesia.
 function formatTanggal(tanggal) {
     if (!tanggal) return "—";
 
@@ -27,14 +42,23 @@ function formatTanggal(tanggal) {
     return hari + " " + namaBulan[bulan] + " " + tahun;
 }
 
-// Mengambil data harga dari PHP dan MySQL
+// Mengambil data harga dari API berdasarkan wilayah.
 async function ambilDataHarga() {
+    const kodeWilayah = pilihanWilayah.value;
+
+    if (!kodeWilayah) {
+        dataHarga = {};
+        tampilkanHarga();
+        return;
+    }
+
     statusHarga.textContent = "Memuat data harga dari database...";
 
     try {
-        const respons = await fetch("api_harga.php", {
-            cache: "no-store"
-        });
+        const respons = await fetch(
+            "api_harga.php?wilayah=" + encodeURIComponent(kodeWilayah),
+            { cache: "no-store" }
+        );
 
         if (!respons.ok) {
             throw new Error("Gagal mengambil data harga.");
@@ -42,43 +66,51 @@ async function ambilDataHarga() {
 
         const data = await respons.json();
 
+        if (!Array.isArray(data)) {
+            throw new Error("Format data harga tidak sesuai.");
+        }
+
         dataHarga = {};
 
-        data.forEach(function (item) {
-            if (!dataHarga["Seram Bagian Barat"]) {
-                dataHarga["Seram Bagian Barat"] = {};
-            }
+        const namaWilayah = daftarWilayah[kodeWilayah];
 
-            dataHarga["Seram Bagian Barat"][item.komoditas] = {
-                harga: Number(item.harga),
-                tanggal: item.tanggal_update
-            };
-        });
+        if (namaWilayah && data.length > 0) {
+            dataHarga[namaWilayah] = {};
+
+            data.forEach(function (item) {
+                dataHarga[namaWilayah][item.komoditas] = {
+                    harga: Number(item.harga),
+                    tanggal: item.tanggal_update
+                };
+            });
+        }
 
         tampilkanHarga();
     } catch (kesalahan) {
         statusHarga.textContent =
-            "Data harga gagal dimuat. Silakan muat ulang halaman.";
+            "Data harga gagal dimuat. Periksa koneksi API, lalu coba lagi.";
 
         console.error("Kesalahan mengambil harga:", kesalahan);
     }
 }
 
-// Menampilkan harga sesuai wilayah yang dipilih
+// Menampilkan harga sesuai wilayah yang dipilih.
 function tampilkanHarga() {
-    const wilayahDipilih = pilihanWilayah.value;
-    const dataWilayah = dataHarga[wilayahDipilih];
+    const kodeWilayah = pilihanWilayah.value;
+    const namaWilayah = daftarWilayah[kodeWilayah] || "";
+    const dataWilayah = dataHarga[namaWilayah];
 
-    if (wilayahDipilih === "") {
+    if (!kodeWilayah) {
         statusHarga.textContent =
             "Silakan pilih wilayah untuk melihat informasi harga.";
-    } else if (dataWilayah) {
+    } else if (dataWilayah && Object.keys(dataWilayah).length > 0) {
         statusHarga.textContent =
-            "Harga komoditas Seram Bagian Barat (SBB), berdasarkan data database.";
+            "Harga komoditas " + namaWilayah +
+            ", berdasarkan data database.";
     } else {
         statusHarga.textContent =
-            "Harga untuk wilayah ini belum tersedia. " +
-            "Saat ini, data harga hanya tersedia untuk Seram Bagian Barat (SBB).";
+            "Harga untuk wilayah " + namaWilayah +
+            " belum tersedia.";
     }
 
     daftarBaris.forEach(function (baris) {
@@ -87,19 +119,11 @@ function tampilkanHarga() {
         const selHarga = baris.cells[2];
         const selPembaruan = baris.cells[3];
 
-        if (wilayahDipilih === "") {
+        if (!kodeWilayah) {
             selWilayah.textContent = "Belum dipilih";
             selHarga.textContent = "Belum tersedia";
             selPembaruan.textContent = "—";
             return;
-        }
-
-        let namaWilayah;
-
-        if (wilayahDipilih === "Ambon" || wilayahDipilih === "Tual") {
-            namaWilayah = "Kota " + wilayahDipilih;
-        } else {
-            namaWilayah = "Kabupaten " + wilayahDipilih;
         }
 
         selWilayah.textContent = namaWilayah;
@@ -118,10 +142,10 @@ function tampilkanHarga() {
     });
 }
 
-// Ketika pengguna memilih wilayah
-pilihanWilayah.addEventListener("change", tampilkanHarga);
+// Ketika pengguna memilih wilayah, ambil datanya kembali.
+pilihanWilayah.addEventListener("change", ambilDataHarga);
 
-// Pencarian komoditas
+// Pencarian komoditas.
 kotakPencarian.addEventListener("input", function () {
     const kataKunci = kotakPencarian.value.toLowerCase().trim();
 
@@ -135,7 +159,7 @@ kotakPencarian.addEventListener("input", function () {
     });
 });
 
-// Tombol Tampilkan Semua
+// Tombol Tampilkan Semua.
 tombolReset.addEventListener("click", function () {
     kotakPencarian.value = "";
 
@@ -144,5 +168,5 @@ tombolReset.addEventListener("click", function () {
     });
 });
 
-// Jalankan pengambilan data ketika halaman dibuka
+// Ambil data saat halaman dibuka.
 ambilDataHarga();

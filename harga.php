@@ -1,74 +1,109 @@
 <?php
 require_once "koneksi.php";
 
-// Wilayah yang saat ini memiliki data harga
-$wilayah = "Seram Bagian Barat";
+// Daftar kode wilayah dan nama wilayah.
+$daftarWilayah = [
+    "ambon"  => "Kota Ambon",
+    "tual"   => "Kota Tual",
+    "malten" => "Maluku Tengah",
+    "maltra" => "Maluku Tenggara",
+    "kkt"    => "Kepulauan Tanimbar",
+    "buru"   => "Buru",
+    "bursel" => "Buru Selatan",
+    "kep_ar" => "Kepulauan Aru",
+    "sbb"    => "Seram Bagian Barat",
+    "sbt"    => "Seram Bagian Timur",
+    "malbar" => "Maluku Barat Daya"
+];
 
-// Ambil data harga dari database
-$stmt = $koneksi->prepare(
-    "SELECT komoditas, harga, tanggal_update
-     FROM harga_komoditas
-     WHERE wilayah = ?
-     ORDER BY FIELD(
-         komoditas,
-         'Kopra',
-         'Biji Kakao',
-         'Cengkeh',
-         'Pala',
-         'Bunga Pala'
-     )"
-);
+// Ambil wilayah yang dipilih pengguna.
+$kodeWilayah = $_GET["wilayah"] ?? "";
+$wilayah = $daftarWilayah[$kodeWilayah] ?? "";
 
-$stmt->bind_param("s", $wilayah);
-$stmt->execute();
-
-$hasil = $stmt->get_result();
-
+// Ambil data harga berdasarkan wilayah.
 $dataHarga = [];
 $tanggalTerbaru = "";
 
-while ($baris = $hasil->fetch_assoc()) {
-    $dataHarga[] = $baris;
+if ($wilayah !== "") {
+    $stmt = $koneksi->prepare(
+        "SELECT komoditas, harga, tanggal_update
+         FROM harga_komoditas
+         WHERE wilayah = ?
+         ORDER BY FIELD(
+             komoditas,
+             'Kopra',
+             'Biji Kakao',
+             'Cengkeh',
+             'Pala',
+             'Bunga Pala'
+         )"
+    );
 
-    if (
-        $tanggalTerbaru === "" ||
-        $baris["tanggal_update"] > $tanggalTerbaru
-    ) {
-        $tanggalTerbaru = $baris["tanggal_update"];
+    $stmt->bind_param("s", $wilayah);
+    $stmt->execute();
+
+    $hasil = $stmt->get_result();
+
+    while ($baris = $hasil->fetch_assoc()) {
+        $dataHarga[] = $baris;
+
+        if (
+            $tanggalTerbaru === "" ||
+            $baris["tanggal_update"] > $tanggalTerbaru
+        ) {
+            $tanggalTerbaru = $baris["tanggal_update"];
+        }
     }
+
+    $stmt->close();
 }
 
-$stmt->close();
-
-function rupiah($angka) {
-    return "Rp" . number_format((float)$angka, 0, ",", ".");
+// Format angka menjadi rupiah.
+function rupiah($angka)
+{
+    return "Rp" . number_format((float) $angka, 0, ",", ".");
 }
 
-function tanggalIndonesia($tanggal) {
+// Ubah tanggal menjadi format Indonesia.
+function tanggalIndonesia($tanggal)
+{
     if ($tanggal === "") {
         return "-";
     }
 
     $bulan = [
-        1 => "Januari", "Februari", "Maret",
-        "April", "Mei", "Juni", "Juli",
-        "Agustus", "September", "Oktober",
-        "November", "Desember"
+        1 => "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember"
     ];
 
     $waktu = strtotime($tanggal);
 
     return date("j", $waktu) . " " .
-           $bulan[(int)date("n", $waktu)] . " " .
-           date("Y", $waktu);
+        $bulan[(int) date("n", $waktu)] . " " .
+        date("Y", $waktu);
 }
+
+$adaDataHarga = count($dataHarga) > 0;
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Harga Komoditas - Harga Komoditas Maluku</title>
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -114,41 +149,58 @@ function tanggalIndonesia($tanggal) {
                 </select>
             </div>
 
-            <div id="informasi-pembaruan" class="informasi-pembaruan" hidden>
-                <h3>Harga Komoditas SBB</h3>
-                <p>Wilayah: Seram Bagian Barat, Maluku</p>
-                <p>
-                    Pembaruan data:
-                    <?= htmlspecialchars(tanggalIndonesia($tanggalTerbaru)) ?>
-                </p>
-            </div>
+            <?php if ($adaDataHarga): ?>
+                <div class="informasi-pembaruan">
+                    <h3>Harga Komoditas</h3>
 
-            <div id="daftar-harga" class="daftar-komoditas kartu-harga" hidden>
-                <?php if (count($dataHarga) > 0): ?>
+                    <p>
+                        Wilayah:
+                        <?= htmlspecialchars($wilayah) ?>, Maluku
+                    </p>
+
+                    <p>
+                        Pembaruan data:
+                        <?= htmlspecialchars(tanggalIndonesia($tanggalTerbaru)) ?>
+                    </p>
+                </div>
+
+                <div id="daftar-harga" class="daftar-komoditas kartu-harga">
                     <?php foreach ($dataHarga as $item): ?>
                         <div class="item-komoditas">
-                            <h4><?= htmlspecialchars($item["komoditas"]) ?></h4>
+                            <h4>
+                                <?= htmlspecialchars($item["komoditas"]) ?>
+                            </h4>
+
                             <p>Harga per kilogram</p>
+
                             <p class="nilai-harga">
                                 <?= htmlspecialchars(rupiah($item["harga"])) ?>
                             </p>
                         </div>
                     <?php endforeach; ?>
-                <?php else: ?>
-                    <p>Data harga untuk wilayah ini belum tersedia.</p>
-                <?php endif; ?>
-            </div>
+                </div>
 
-            <div id="status-wilayah" class="catatan-harga" hidden></div>
+            <?php elseif ($kodeWilayah !== "" && isset($daftarWilayah[$kodeWilayah])): ?>
+                <div class="catatan-harga">
+                    <h3>Harga Belum Tersedia</h3>
+
+                    <p>
+                        Data harga untuk wilayah
+                        <?= htmlspecialchars($wilayah) ?>
+                        belum tersedia.
+                    </p>
+                </div>
+            <?php endif; ?>
 
             <div class="catatan-harga">
                 <h3>Informasi Harga</h3>
+
                 <p>
                     Harga dimasukkan oleh pengelola berdasarkan
-                    informasi perdagangan setempat di Seram
-                    Bagian Barat. Harga dapat berbeda menurut
-                    kualitas komoditas dan lokasi transaksi.
+                    informasi perdagangan setempat. Harga dapat
+                    berbeda menurut kualitas komoditas dan lokasi transaksi.
                 </p>
+
                 <p>
                     Untuk informasi lebih lanjut, silakan
                     hubungi pengelola melalui halaman Kontak.
@@ -163,34 +215,23 @@ function tanggalIndonesia($tanggal) {
 
     <script>
         const pilihanWilayah = document.getElementById("wilayah-harga");
-        const daftarHarga = document.getElementById("daftar-harga");
-        const informasiPembaruan = document.getElementById("informasi-pembaruan");
-        const statusWilayah = document.getElementById("status-wilayah");
+        const parameter = new URLSearchParams(window.location.search);
 
+        // Pertahankan pilihan wilayah setelah halaman dimuat.
+        pilihanWilayah.value = parameter.get("wilayah") || "";
+
+        // Muat ulang halaman ketika pengguna memilih wilayah.
         pilihanWilayah.addEventListener("change", function () {
             const wilayah = pilihanWilayah.value;
 
-            daftarHarga.hidden = true;
-            informasiPembaruan.hidden = true;
-            statusWilayah.hidden = true;
-            statusWilayah.innerHTML = "";
-
-            if (wilayah === "sbb") {
-                daftarHarga.hidden = false;
-                informasiPembaruan.hidden = false;
-            } else if (wilayah !== "") {
-                statusWilayah.innerHTML = `
-                    <h3>Harga Belum Tersedia</h3>
-                    <p>
-                        Data harga untuk wilayah ini belum tersedia.
-                        Saat ini, informasi harga yang tersedia baru
-                        untuk Seram Bagian Barat (SBB).
-                    </p>
-                `;
-
-                statusWilayah.hidden = false;
+            if (wilayah === "") {
+                window.location.href = "harga.php";
+            } else {
+                window.location.href =
+                    "harga.php?wilayah=" + encodeURIComponent(wilayah);
             }
         });
     </script>
 </body>
+
 </html>
