@@ -22,7 +22,6 @@ $wilayah = $daftarWilayah[$kodeWilayah] ?? "";
 
 // Ambil data harga berdasarkan wilayah.
 $dataHarga = [];
-$tanggalTerbaru = "";
 
 if ($wilayah !== "") {
     $stmt = $koneksi->prepare(
@@ -46,13 +45,6 @@ if ($wilayah !== "") {
 
     while ($baris = $hasil->fetch_assoc()) {
         $dataHarga[] = $baris;
-
-        if (
-            $tanggalTerbaru === "" ||
-            $baris["tanggal_update"] > $tanggalTerbaru
-        ) {
-            $tanggalTerbaru = $baris["tanggal_update"];
-        }
     }
 
     $stmt->close();
@@ -61,32 +53,36 @@ if ($wilayah !== "") {
 // Format angka menjadi rupiah.
 function rupiah($angka)
 {
-    return "Rp" . number_format((float) $angka, 0, ",", ".");
+    return "Rp " . number_format((float) $angka, 0, ",", ".");
 }
 
-// Ubah tanggal menjadi format Indonesia.
+// Format tanggal menjadi tanggal Indonesia singkat.
 function tanggalIndonesia($tanggal)
 {
-    if ($tanggal === "") {
+    if (empty($tanggal)) {
         return "-";
     }
 
     $bulan = [
-        1 => "Januari",
-        "Februari",
-        "Maret",
-        "April",
+        1 => "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
         "Mei",
-        "Juni",
-        "Juli",
-        "Agustus",
-        "September",
-        "Oktober",
-        "November",
-        "Desember"
+        "Jun",
+        "Jul",
+        "Agu",
+        "Sep",
+        "Okt",
+        "Nov",
+        "Des"
     ];
 
     $waktu = strtotime($tanggal);
+
+    if ($waktu === false) {
+        return "-";
+    }
 
     return date("j", $waktu) . " " .
         $bulan[(int) date("n", $waktu)] . " " .
@@ -95,6 +91,7 @@ function tanggalIndonesia($tanggal)
 
 $adaDataHarga = count($dataHarga) > 0;
 ?>
+
 <!DOCTYPE html>
 <html lang="id">
 
@@ -108,6 +105,7 @@ $adaDataHarga = count($dataHarga) > 0;
 </head>
 
 <body>
+
     <header>
         <h1>Harga Komoditas Maluku</h1>
         <p>Informasi harga hasil perkebunan di Maluku.</p>
@@ -118,11 +116,12 @@ $adaDataHarga = count($dataHarga) > 0;
         <a href="harga.php">Harga Komoditas</a>
         <a href="komoditas.html">Jenis Komoditas</a>
         <a href="tentang.html">Tentang Pengelola</a>
-        <a href="kontak.html">Kontak</a>
+        <a href="login.php">Pengelola</a>
     </nav>
 
     <main>
         <section class="harga-terbaru">
+
             <h2>Informasi Harga Komoditas</h2>
 
             <p>
@@ -131,6 +130,7 @@ $adaDataHarga = count($dataHarga) > 0;
             </p>
 
             <div class="pencarian-wilayah">
+
                 <label for="wilayah-harga">Kabupaten / Kota</label>
 
                 <select id="wilayah-harga">
@@ -147,10 +147,13 @@ $adaDataHarga = count($dataHarga) > 0;
                     <option value="sbt">Kabupaten Seram Bagian Timur</option>
                     <option value="malbar">Kabupaten Maluku Barat Daya</option>
                 </select>
+
             </div>
 
             <?php if ($adaDataHarga): ?>
+
                 <div class="informasi-pembaruan">
+
                     <h3>Harga Komoditas</h3>
 
                     <p>
@@ -158,15 +161,14 @@ $adaDataHarga = count($dataHarga) > 0;
                         <?= htmlspecialchars($wilayah) ?>, Maluku
                     </p>
 
-                    <p>
-                        Pembaruan data:
-                        <?= htmlspecialchars(tanggalIndonesia($tanggalTerbaru)) ?>
-                    </p>
                 </div>
 
                 <div id="daftar-harga" class="daftar-komoditas kartu-harga">
+
                     <?php foreach ($dataHarga as $item): ?>
+
                         <div class="item-komoditas">
+
                             <h4>
                                 <?= htmlspecialchars($item["komoditas"]) ?>
                             </h4>
@@ -176,12 +178,22 @@ $adaDataHarga = count($dataHarga) > 0;
                             <p class="nilai-harga">
                                 <?= htmlspecialchars(rupiah($item["harga"])) ?>
                             </p>
+
+                            <p class="tanggal-update">
+                                Terakhir diperbarui:
+                                <?= htmlspecialchars(tanggalIndonesia($item["tanggal_update"])) ?>
+                            </p>
+
                         </div>
+
                     <?php endforeach; ?>
+
                 </div>
 
             <?php elseif ($kodeWilayah !== "" && isset($daftarWilayah[$kodeWilayah])): ?>
+
                 <div class="catatan-harga">
+
                     <h3>Harga Belum Tersedia</h3>
 
                     <p>
@@ -189,10 +201,13 @@ $adaDataHarga = count($dataHarga) > 0;
                         <?= htmlspecialchars($wilayah) ?>
                         belum tersedia.
                     </p>
+
                 </div>
+
             <?php endif; ?>
 
             <div class="catatan-harga">
+
                 <h3>Informasi Harga</h3>
 
                 <p>
@@ -205,7 +220,9 @@ $adaDataHarga = count($dataHarga) > 0;
                     Untuk informasi lebih lanjut, silakan
                     hubungi pengelola melalui halaman Kontak.
                 </p>
+
             </div>
+
         </section>
     </main>
 
@@ -232,6 +249,6 @@ $adaDataHarga = count($dataHarga) > 0;
             }
         });
     </script>
-</body>
 
+</body>
 </html>

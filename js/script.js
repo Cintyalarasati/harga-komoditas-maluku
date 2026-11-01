@@ -7,22 +7,100 @@ const daftarBaris = document.querySelectorAll(
     ".tabel-wrapper tbody tr"
 );
 
-// Menyimpan data harga berdasarkan wilayah.
+// Menyimpan data harga dari database.
 let dataHarga = {};
 
-// Mengubah kode wilayah menjadi nama yang digunakan database.
+// Daftar kode API dan nama wilayah database.
+// Bisa menerima nama wilayah maupun kode wilayah.
 const daftarWilayah = {
-    ambon: "Kota Ambon",
-    tual: "Kota Tual",
-    malten: "Maluku Tengah",
-    maltra: "Maluku Tenggara",
-    kkt: "Kepulauan Tanimbar",
-    buru: "Buru",
-    bursel: "Buru Selatan",
-    kep_ar: "Kepulauan Aru",
-    sbb: "Seram Bagian Barat",
-    sbt: "Seram Bagian Timur",
-    malbar: "Maluku Barat Daya"
+    "ambon": {
+        kode: "ambon",
+        nama: "Kota Ambon"
+    },
+    "kota ambon": {
+        kode: "ambon",
+        nama: "Kota Ambon"
+    },
+    "tual": {
+        kode: "tual",
+        nama: "Kota Tual"
+    },
+    "kota tual": {
+        kode: "tual",
+        nama: "Kota Tual"
+    },
+    "maluku tengah": {
+        kode: "malten",
+        nama: "Maluku Tengah"
+    },
+    "kabupaten maluku tengah": {
+        kode: "malten",
+        nama: "Maluku Tengah"
+    },
+    "malten": {
+        kode: "malten",
+        nama: "Maluku Tengah"
+    },
+    "maluku tenggara": {
+        kode: "maltra",
+        nama: "Maluku Tenggara"
+    },
+    "kabupaten maluku tenggara": {
+        kode: "maltra",
+        nama: "Maluku Tenggara"
+    },
+    "maltra": {
+        kode: "maltra",
+        nama: "Maluku Tenggara"
+    },
+    "kepulauan tanimbar": {
+        kode: "kkt",
+        nama: "Kepulauan Tanimbar"
+    },
+    "kkt": {
+        kode: "kkt",
+        nama: "Kepulauan Tanimbar"
+    },
+    "buru": {
+        kode: "buru",
+        nama: "Buru"
+    },
+    "buru selatan": {
+        kode: "bursel",
+        nama: "Buru Selatan"
+    },
+    "kepulauan aru": {
+        kode: "kep_ar",
+        nama: "Kepulauan Aru"
+    },
+    "kep_ar": {
+        kode: "kep_ar",
+        nama: "Kepulauan Aru"
+    },
+    "seram bagian barat": {
+        kode: "sbb",
+        nama: "Seram Bagian Barat"
+    },
+    "sbb": {
+        kode: "sbb",
+        nama: "Seram Bagian Barat"
+    },
+    "seram bagian timur": {
+        kode: "sbt",
+        nama: "Seram Bagian Timur"
+    },
+    "sbt": {
+        kode: "sbt",
+        nama: "Seram Bagian Timur"
+    },
+    "maluku barat daya": {
+        kode: "malbar",
+        nama: "Maluku Barat Daya"
+    },
+    "malbar": {
+        kode: "malbar",
+        nama: "Maluku Barat Daya"
+    }
 };
 
 // Mengubah format tanggal menjadi format Indonesia.
@@ -39,14 +117,25 @@ function formatTanggal(tanggal) {
         "Jul", "Agu", "Sep", "Okt", "Nov", "Des"
     ];
 
+    if (
+        bagian.length !== 3 ||
+        bulan < 0 ||
+        bulan > 11 ||
+        !hari ||
+        !tahun
+    ) {
+        return "—";
+    }
+
     return hari + " " + namaBulan[bulan] + " " + tahun;
 }
 
-// Mengambil data harga dari API berdasarkan wilayah.
+// Mengambil data harga dari API.
 async function ambilDataHarga() {
-    const kodeWilayah = pilihanWilayah.value;
+    const pilihan = pilihanWilayah.value.trim().toLowerCase();
+    const wilayahDipilih = daftarWilayah[pilihan];
 
-    if (!kodeWilayah) {
+    if (!wilayahDipilih) {
         dataHarga = {};
         tampilkanHarga();
         return;
@@ -56,7 +145,8 @@ async function ambilDataHarga() {
 
     try {
         const respons = await fetch(
-            "api_harga.php?wilayah=" + encodeURIComponent(kodeWilayah),
+            "api_harga.php?wilayah=" +
+            encodeURIComponent(wilayahDipilih.kode),
             { cache: "no-store" }
         );
 
@@ -72,9 +162,9 @@ async function ambilDataHarga() {
 
         dataHarga = {};
 
-        const namaWilayah = daftarWilayah[kodeWilayah];
+        const namaWilayah = wilayahDipilih.nama;
 
-        if (namaWilayah && data.length > 0) {
+        if (data.length > 0) {
             dataHarga[namaWilayah] = {};
 
             data.forEach(function (item) {
@@ -86,27 +176,35 @@ async function ambilDataHarga() {
         }
 
         tampilkanHarga();
+
     } catch (kesalahan) {
         statusHarga.textContent =
-            "Data harga gagal dimuat. Periksa koneksi API, lalu coba lagi.";
+            "Data harga gagal dimuat. Silakan coba lagi.";
 
         console.error("Kesalahan mengambil harga:", kesalahan);
     }
 }
 
-// Menampilkan harga sesuai wilayah yang dipilih.
+// Menampilkan harga pada tabel Beranda.
 function tampilkanHarga() {
-    const kodeWilayah = pilihanWilayah.value;
-    const namaWilayah = daftarWilayah[kodeWilayah] || "";
+    const pilihan = pilihanWilayah.value.trim().toLowerCase();
+    const wilayahDipilih = daftarWilayah[pilihan];
+
+    const namaWilayah = wilayahDipilih
+        ? wilayahDipilih.nama
+        : "";
+
     const dataWilayah = dataHarga[namaWilayah];
 
-    if (!kodeWilayah) {
+    if (!pilihan) {
         statusHarga.textContent =
             "Silakan pilih wilayah untuk melihat informasi harga.";
+
     } else if (dataWilayah && Object.keys(dataWilayah).length > 0) {
         statusHarga.textContent =
             "Harga komoditas " + namaWilayah +
             ", berdasarkan data database.";
+
     } else {
         statusHarga.textContent =
             "Harga untuk wilayah " + namaWilayah +
@@ -115,11 +213,12 @@ function tampilkanHarga() {
 
     daftarBaris.forEach(function (baris) {
         const namaKomoditas = baris.cells[0].textContent.trim();
+
         const selWilayah = baris.cells[1];
         const selHarga = baris.cells[2];
         const selPembaruan = baris.cells[3];
 
-        if (!kodeWilayah) {
+        if (!pilihan) {
             selWilayah.textContent = "Belum dipilih";
             selHarga.textContent = "Belum tersedia";
             selPembaruan.textContent = "—";
@@ -130,11 +229,13 @@ function tampilkanHarga() {
 
         const item = dataWilayah && dataWilayah[namaKomoditas];
 
-        if (item) {
+        if (item && Number.isFinite(item.harga)) {
             selHarga.textContent =
                 "Rp " + item.harga.toLocaleString("id-ID");
 
-            selPembaruan.textContent = formatTanggal(item.tanggal);
+            selPembaruan.textContent =
+                formatTanggal(item.tanggal);
+
         } else {
             selHarga.textContent = "Belum tersedia";
             selPembaruan.textContent = "—";
@@ -142,10 +243,10 @@ function tampilkanHarga() {
     });
 }
 
-// Ketika pengguna memilih wilayah, ambil datanya kembali.
+// Mengambil data ketika wilayah dipilih.
 pilihanWilayah.addEventListener("change", ambilDataHarga);
 
-// Pencarian komoditas.
+// Fitur pencarian komoditas.
 kotakPencarian.addEventListener("input", function () {
     const kataKunci = kotakPencarian.value.toLowerCase().trim();
 
@@ -159,7 +260,7 @@ kotakPencarian.addEventListener("input", function () {
     });
 });
 
-// Tombol Tampilkan Semua.
+// Tombol untuk menampilkan semua komoditas.
 tombolReset.addEventListener("click", function () {
     kotakPencarian.value = "";
 
@@ -168,5 +269,5 @@ tombolReset.addEventListener("click", function () {
     });
 });
 
-// Ambil data saat halaman dibuka.
+// Mengambil data saat halaman pertama kali dibuka.
 ambilDataHarga();

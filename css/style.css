@@ -1,4 +1,3 @@
-
 /* =====================================
    1. PENGATURAN DASAR
 ===================================== */
@@ -24,7 +23,6 @@ h2 {
    2. HEADER DAN MENU NAVIGASI
 ===================================== */
 
-
 /* HEADER DENGAN GRADASI HIJAU DAN GAMBAR PULAU */
 header {
     min-height: 200px;
@@ -41,8 +39,8 @@ header {
             rgba(23, 76, 53, 0.25) 72%,
             rgba(23, 76, 53, 0.05) 100%
         ),
-       url("../images/pulau.jpg");
-       
+        url("../images/pulau.jpg");
+
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -69,11 +67,15 @@ nav {
 }
 
 nav a {
-    display: inline-block;
-    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 8px 14px;
     border-radius: 6px;
     color: white;
     text-decoration: none;
+    font-size: 14px;
 }
 
 nav a:visited {
@@ -83,7 +85,6 @@ nav a:visited {
 nav a:hover {
     background-color: #2c684b;
 }
-
 
 /* =====================================
    3. AREA UTAMA WEBSITE
@@ -110,7 +111,6 @@ main {
     font-size: 14px;
 }
 
-
 /* =====================================
    4. PILIHAN WILAYAH
 ===================================== */
@@ -136,19 +136,21 @@ main {
     border-color: #174c35;
 }
 
-
 /* =====================================
    5. TABEL HARGA KOMODITAS
 ===================================== */
 
 .tabel-wrapper {
+    position: relative;
     width: 100%;
     margin-top: 20px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .tabel-wrapper table {
     width: 100%;
+    min-width: 620px;
     border-collapse: collapse;
     background-color: white;
 }
@@ -166,10 +168,14 @@ main {
     white-space: nowrap;
 }
 
+/* Mencegah nama wilayah terpotong menjadi banyak baris */
+.tabel-wrapper td:nth-child(2) {
+    white-space: nowrap;
+}
+
 .tabel-wrapper tbody tr:hover {
     background-color: #f6faf7;
 }
-
 
 /* =====================================
    6. PENCARIAN DAN TOMBOL RESET
@@ -214,7 +220,6 @@ main {
 #reset-pencarian:hover {
     background-color: #2c684b;
 }
-
 
 /* =====================================
    7. KARTU JENIS KOMODITAS
@@ -267,7 +272,6 @@ main {
     line-height: 1.6;
 }
 
-
 /* =====================================
    8. INFORMASI PEMBARUAN
 ===================================== */
@@ -290,7 +294,6 @@ main {
     color: #526158;
 }
 
-
 /* =====================================
    9. FOOTER
 ===================================== */
@@ -302,35 +305,57 @@ footer {
     text-align: center;
 }
 
-
 /* =====================================
    10. TAMPILAN TABLET
 ===================================== */
 
 @media (max-width: 800px) {
+
+    /* Kartu komoditas menjadi 2 kolom */
     .daftar-komoditas {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-}
 
+    /* Tabel dapat digeser ke samping */
+    .tabel-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tabel-wrapper table {
+        min-width: 620px;
+    }
+
+    /* Nama wilayah tidak terpotong menjadi beberapa baris */
+    .tabel-wrapper td:nth-child(2) {
+        white-space: nowrap;
+    }
+}
 
 /* =====================================
    11. TAMPILAN HP
 ===================================== */
 
 @media (max-width: 600px) {
+
     header {
         padding: 24px 5%;
     }
 
     nav {
-        gap: 4px;
+        gap: 6px;
         padding: 12px 5%;
     }
 
+    /* Memperbesar area sentuh menu HP */
     nav a {
-        padding: 8px;
-        font-size: 13px;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 12px;
+        font-size: 14px;
     }
 
     main {
@@ -507,12 +532,14 @@ footer {
 ===================================== */
 
 @media (max-width: 800px) {
+
     .kontak-developer {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 600px) {
+
     .profil-developer {
         grid-template-columns: 1fr;
         gap: 20px;
@@ -543,7 +570,10 @@ footer {
     }
 }
 
-/* Tampilan pembuka Beranda */
+/* =====================================
+   TAMPILAN PEMBUKA BERANDA
+===================================== */
+
 .hero-beranda {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -552,7 +582,6 @@ footer {
     overflow: hidden;
     background: linear-gradient(120deg, #ffffff, #e8f4ed);
 }
-
 
 .hero-teks h2 {
     margin: 18px 0 16px;
@@ -623,6 +652,7 @@ footer {
 
 /* Penyesuaian layar kecil */
 @media (max-width: 800px) {
+
     .hero-beranda {
         grid-template-columns: 1fr;
     }
@@ -637,6 +667,7 @@ footer {
 }
 
 @media (max-width: 480px) {
+
     .hero-gambar {
         grid-template-columns: 1fr 1fr;
     }
@@ -677,4 +708,273 @@ footer {
 /* Tetap sembunyikan elemen yang memiliki atribut hidden */
 [hidden] {
     display: none !important;
+}
+
+/* =====================================
+   16. DASHBOARD ADMIN
+===================================== */
+
+.admin-header {
+    min-height: auto;
+    padding: 30px 6%;
+    background: #174c35;
+    color: white;
+}
+
+.admin-header h1 {
+    margin: 0 0 5px;
+}
+
+.admin-header p {
+    margin: 0;
+    color: white;
+}
+
+.admin-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 6%;
+    background-color: #103b29;
+}
+
+.admin-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    color: white;
+    text-decoration: none;
+}
+
+.admin-nav a:visited {
+    color: white;
+}
+
+.admin-nav a:hover {
+    background-color: #2c684b;
+}
+
+.admin-nav .admin-logout {
+    margin-left: auto;
+    background-color: #8b2e2e;
+}
+
+.admin-nav .admin-logout:hover {
+    background-color: #a83c3c;
+}
+
+.admin-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 30px auto;
+}
+
+.admin-welcome,
+.admin-card {
+    margin-bottom: 22px;
+    padding: 24px;
+    border-radius: 12px;
+    background-color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.admin-welcome h2,
+.admin-card h2 {
+    margin-top: 0;
+    color: #174c35;
+}
+
+.admin-welcome p,
+.admin-description {
+    color: #526158;
+}
+
+.admin-region {
+    margin-bottom: 20px;
+    color: #526158;
+}
+
+/* Pesan berhasil dan gagal */
+.admin-message {
+    margin-bottom: 20px;
+    padding: 12px 16px;
+    border-radius: 7px;
+    font-size: 14px;
+}
+
+.admin-message.success {
+    border: 1px solid #b7dfc3;
+    background-color: #e8f6ec;
+    color: #176534;
+}
+
+.admin-message.error {
+    border: 1px solid #efc2c2;
+    background-color: #fff0f0;
+    color: #a32929;
+}
+
+/* Form admin */
+.admin-form {
+    display: grid;
+    gap: 18px;
+    max-width: 600px;
+}
+
+.admin-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.admin-form-group label {
+    color: #174c35;
+    font-weight: bold;
+}
+
+.admin-form-group input,
+.admin-form-group select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5ce;
+    border-radius: 7px;
+    background-color: white;
+    color: #24332b;
+    font-size: 15px;
+}
+
+.admin-form-group input:focus,
+.admin-form-group select:focus {
+    outline: 2px solid #47745d;
+    border-color: #174c35;
+}
+
+.admin-submit {
+    min-height: 44px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 7px;
+    background-color: #174c35;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.admin-submit:hover {
+    background-color: #2c684b;
+}
+
+/* Tabel admin */
+.admin-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.admin-table {
+    width: 100%;
+    min-width: 500px;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #e2e8e4;
+    text-align: left;
+}
+
+.admin-table th {
+    background-color: #e7f1e9;
+    color: #174c35;
+    white-space: nowrap;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #f6faf7;
+}
+
+/* Footer admin */
+.admin-footer {
+    padding: 20px;
+    background-color: #103b29;
+    color: white;
+    text-align: center;
+}
+
+.admin-footer p {
+    margin: 0;
+}
+
+/* =====================================
+   RESPONSIVE DASHBOARD ADMIN
+===================================== */
+
+@media (max-width: 600px) {
+
+    .admin-header {
+        padding: 24px 5%;
+    }
+
+    .admin-nav {
+        gap: 6px;
+        padding: 12px 5%;
+    }
+
+    .admin-nav a {
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    .admin-nav .admin-logout {
+        margin-left: 0;
+    }
+
+    .admin-container {
+        width: 94%;
+        margin-top: 20px;
+    }
+
+    .admin-welcome,
+    .admin-card {
+        padding: 18px;
+    }
+
+    .admin-form {
+        width: 100%;
+    }
+
+    .admin-submit {
+        width: 100%;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 10px;
+        font-size: 13px;
+    }
+}
+/* =====================================
+   17. PERBAIKAN KARTU HARGA (UI-10)
+===================================== */
+
+/* Membuat susunan kartu harga lebih fleksibel */
+.kartu-harga {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+/* Membuat angka harga lebih menonjol */
+.item-komoditas .nilai-harga {
+    padding-top: 0;
+    color: #174c35;
+    font-size: 22px;
+    font-weight: 700;
 }

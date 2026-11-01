@@ -1,5 +1,5 @@
 <?php
-session_start();
+require_once "sesi.php";
 
 if (!isset($_SESSION["admin_id"])) {
     header("Location: login.php");
@@ -54,33 +54,44 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $pesan = "Tanggal pembaruan tidak valid.";
         } else {
             $harga = (int) $hargaInput;
-
-            $stmt = $koneksi->prepare(
-                "UPDATE harga_komoditas
-                 SET harga = ?, tanggal_update = ?
-                 WHERE wilayah = ? AND komoditas = ?"
-            );
-
             $tanggalSimpan = $tanggal->format("Y-m-d");
 
-            $stmt->bind_param(
-                "isss",
-                $harga,
-                $tanggalSimpan,
-                $wilayah,
-                $namaKomoditas
+            $stmt = $koneksi->prepare(
+                "INSERT INTO harga_komoditas
+                 (wilayah, komoditas, harga, tanggal_update)
+                 VALUES (?, ?, ?, ?)
+                 ON DUPLICATE KEY UPDATE
+                    harga = VALUES(harga),
+                    tanggal_update = VALUES(tanggal_update)"
             );
 
-            if ($stmt->execute() && $stmt->affected_rows >= 0) {
-                if ($stmt->affected_rows >= 0) {
-                    $pesan = "Harga berhasil diproses.";
-                    $jenisPesan = "success";
-                }
-            } else {
-                $pesan = "Gagal menyimpan perubahan harga.";
-            }
+            if ($stmt) {
+                $stmt->bind_param(
+                    "ssis",
+                    $wilayah,
+                    $namaKomoditas,
+                    $harga,
+                    $tanggalSimpan
+                );
 
-            $stmt->close();
+                if ($stmt->execute()) {
+                    if ($stmt->affected_rows === 1) {
+                        $pesan = "Harga baru berhasil ditambahkan.";
+                    } elseif ($stmt->affected_rows === 2) {
+                        $pesan = "Harga berhasil diperbarui.";
+                    } else {
+                        $pesan = "Tidak ada perubahan (data sama).";
+                    }
+
+                    $jenisPesan = "success";
+                } else {
+                    $pesan = "Gagal menyimpan perubahan harga.";
+                }
+
+                $stmt->close();
+            } else {
+                $pesan = "Gagal menyiapkan proses penyimpanan harga.";
+            }
         }
     }
 }
@@ -111,99 +122,148 @@ $hasil = $sql->get_result();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Harga Komoditas Maluku</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-    <h1>Dashboard Admin</h1>
 
-    <p>
-        Selamat datang,
-        <?= htmlspecialchars($_SESSION["admin_username"]) ?>!
-    </p>
-    
-    <p> 
-        <a href="logout.php">Logout</a>
-    </p>
+    <header class="admin-header">
+        <h1>Dashboard Admin</h1>
+        <p>Pengelolaan Harga Komoditas Maluku</p>
+    </header>
 
-    <h2>Kelola Harga Komoditas</h2>
-    <p>Wilayah: <?= htmlspecialchars($wilayah) ?></p>
+    <nav class="admin-nav">
+        <a href="index.html">Beranda</a>
+        <a href="harga.php">Harga Komoditas</a>
+        <a href="logout.php" class="admin-logout">Logout</a>
+    </nav>
 
-    <?php if ($pesan !== ""): ?>
-        <p style="color: <?= $jenisPesan === "success" ? "green" : "red" ?>;">
-            <?= htmlspecialchars($pesan) ?>
-        </p>
-    <?php endif; ?>
+    <main class="admin-container">
 
-    <form method="POST" action="admin.php">
-        <input
-            type="hidden"
-            name="csrf_token"
-            value="<?= htmlspecialchars($_SESSION["csrf_token"]) ?>"
-        >
+        <section class="admin-welcome">
+            <h2>Selamat Datang, <?= htmlspecialchars($_SESSION["admin_username"]) ?>!</h2>
+            <p>Kelola informasi harga komoditas untuk wilayah Seram Bagian Barat.</p>
+        </section>
 
-        <label for="komoditas">Pilih komoditas:</label><br>
-        <select id="komoditas" name="komoditas" required>
-            <option value="">-- Pilih komoditas --</option>
-            <?php foreach ($komoditasDiizinkan as $nama): ?>
-                <option value="<?= htmlspecialchars($nama) ?>">
-                    <?= htmlspecialchars($nama) ?>
-                </option>
-            <?php endforeach; ?>
-        </select>
+        <section class="admin-card">
 
-        <br><br>
+            <h2>Kelola Harga Komoditas</h2>
 
-        <label for="harga">Harga per kilogram (rupiah):</label><br>
-        <input
-            type="number"
-            id="harga"
-            name="harga"
-            min="1"
-            step="1"
-            required
-        >
+            <p class="admin-region">
+                Wilayah:
+                <strong><?= htmlspecialchars($wilayah) ?></strong>
+            </p>
 
-        <br><br>
+            <?php if ($pesan !== ""): ?>
+                <div class="admin-message <?= $jenisPesan === "success" ? "success" : "error" ?>">
+                    <?= htmlspecialchars($pesan) ?>
+                </div>
+            <?php endif; ?>
 
-        <label for="tanggal_update">Tanggal pembaruan harga:</label><br>
-        <input
-            type="date"
-            id="tanggal_update"
-            name="tanggal_update"
-            required
-        >
+            <form method="POST" action="admin.php" class="admin-form">
 
-        <br><br>
+                <input
+                    type="hidden"
+                    name="csrf_token"
+                    value="<?= htmlspecialchars($_SESSION["csrf_token"]) ?>"
+                >
 
-        <button type="submit">Simpan Perubahan</button>
-    </form>
+                <div class="admin-form-group">
+                    <label for="komoditas">Pilih Komoditas</label>
 
-    <h2>Daftar Harga Saat Ini</h2>
+                    <select id="komoditas" name="komoditas" required>
+                        <option value="">-- Pilih Komoditas --</option>
 
-    <table border="1" cellpadding="8">
-        <thead>
-            <tr>
-                <th>Komoditas</th>
-                <th>Harga per kg</th>
-                <th>Tanggal Pembaruan</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while ($baris = $hasil->fetch_assoc()): ?>
-                <tr>
-                    <td><?= htmlspecialchars($baris["komoditas"]) ?></td>
-                    <td>
-                        Rp <?= number_format(
-                            $baris["harga"],
-                            0,
-                            ",",
-                            "."
-                        ) ?>
-                    </td>
-                    <td><?= htmlspecialchars($baris["tanggal_update"]) ?></td>
-                </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+                        <?php foreach ($komoditasDiizinkan as $nama): ?>
+                            <option value="<?= htmlspecialchars($nama) ?>">
+                                <?= htmlspecialchars($nama) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="harga">Harga per Kilogram (Rupiah)</label>
+
+                    <input
+                        type="number"
+                        id="harga"
+                        name="harga"
+                        min="1"
+                        step="1"
+                        placeholder="Contoh: 15000"
+                        required
+                    >
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="tanggal_update">Tanggal Pembaruan Harga</label>
+
+                    <input
+                        type="date"
+                        id="tanggal_update"
+                        name="tanggal_update"
+                        required
+                    >
+                </div>
+
+                <button type="submit" class="admin-submit">
+                    Simpan Perubahan
+                </button>
+
+            </form>
+
+        </section>
+
+        <section class="admin-card">
+
+            <h2>Daftar Harga Saat Ini</h2>
+
+            <p class="admin-description">
+                Berikut adalah daftar harga komoditas yang tersimpan di database.
+            </p>
+
+            <div class="admin-table-wrapper">
+
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Komoditas</th>
+                            <th>Harga per kg</th>
+                            <th>Tanggal Pembaruan</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <?php while ($baris = $hasil->fetch_assoc()): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($baris["komoditas"]) ?></td>
+
+                                <td>
+                                    Rp <?= number_format(
+                                        $baris["harga"],
+                                        0,
+                                        ",",
+                                        "."
+                                    ) ?>
+                                </td>
+
+                                <td><?= htmlspecialchars($baris["tanggal_update"]) ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="admin-footer">
+        <p>Harga Komoditas Maluku &copy; <?= date("Y") ?></p>
+    </footer>
+
 </body>
 </html>
 
