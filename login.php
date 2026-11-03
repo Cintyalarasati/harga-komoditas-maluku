@@ -1,106 +1,135 @@
 <?php
 require_once __DIR__ . "/config/bootstrap.php";
-require_once "sesi.php";
-require_once "koneksi.php";
+require_once __DIR__ . "/sesi.php";
+require_once __DIR__ . "/koneksi.php";
 
-// Menampilkan pesan jika sesi admin berakhir
+// Menyiapkan pesan error.
+$error = "";
+
+// Membuat CSRF token jika belum tersedia.
+if (empty($_SESSION["csrf_token"])) {
+    $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+}
+
+// Menampilkan pesan jika sesi admin berakhir.
 if (isset($_GET["timeout"]) && $_GET["timeout"] === "1") {
     $error = "Sesi admin berakhir karena tidak ada aktivitas selama 30 menit. Silakan login kembali.";
 }
 
+// Memproses formulir login.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $username = trim($_POST["username"] ?? "");
-    $password = $_POST["password"] ?? "";
 
-    // Pengaturan batas percobaan login
-    $maks = 5;
-    $jendela = 5 * 60;
-    $ip = $_SERVER["REMOTE_ADDR"] ?? "";
+    // Memeriksa CSRF token.
+    $token = $_POST["csrf_token"] ?? "";
 
-    // Menghitung percobaan login gagal dari IP ini
-    // dalam 15 menit terakhir
-    $cek = $koneksi->prepare(
-        "SELECT COUNT(*)
-         FROM login_gagal
-         WHERE ip = ?
-         AND waktu > (NOW() - INTERVAL ? SECOND)"
-    );
+    if (
+        !is_string($token) ||
+        !hash_equals($_SESSION["csrf_token"], $token)
+    ) {
+        $error = "Permintaan tidak valid. Silakan muat ulang halaman.";
 
-    if (!$cek) {
-        $error = "Terjadi kesalahan sistem. Silakan coba lagi.";
     } else {
-        $cek->bind_param("si", $ip, $jendela);
-        $cek->execute();
+        $username = trim($_POST["username"] ?? "");
+        $password = $_POST["password"] ?? "";
 
-        $jumlahGagal = (int) $cek->get_result()->fetch_row()[0];
+        // Pengaturan batas percobaan login.
+        $maks = 5;
+        $jendela = 5 * 60;
+        $ip = $_SERVER["REMOTE_ADDR"] ?? "";
 
-        $cek->close();
+        // Menghitung percobaan login gagal dari IP ini
+        // dalam 5 menit terakhir.
+        $cek = $koneksi->prepare(
+            "SELECT COUNT(*)
+             FROM login_gagal
+             WHERE ip = ?
+             AND waktu > (NOW() - INTERVAL ? SECOND)"
+        );
 
-        if ($jumlahGagal >= $maks) {
-            $error = "Terlalu banyak percobaan. Coba lagi dalam 5 menit.";
+        if (!$cek) {
+            $error = "Terjadi kesalahan sistem. Silakan coba lagi.";
+
         } else {
-            // Mencari akun admin berdasarkan username
-            $stmt = $koneksi->prepare(
-                "SELECT id, username, password_hash
-                 FROM admin
-                 WHERE username = ?"
-            );
+            $cek->bind_param("si", $ip, $jendela);
+            $cek->execute();
 
-            if (!$stmt) {
-                $error = "Terjadi kesalahan sistem. Silakan coba lagi.";
+            $jumlahGagal = (int) $cek->get_result()->fetch_row()[0];
+
+            $cek->close();
+
+            if ($jumlahGagal >= $maks) {
+                $error = "Terlalu banyak percobaan. Coba lagi dalam 5 menit.";
+
             } else {
-                $stmt->bind_param("s", $username);
-                $stmt->execute();
+                // Mencari akun admin berdasarkan username.
+                $stmt = $koneksi->prepare(
+                    "SELECT id, username, password_hash
+                     FROM admin
+                     WHERE username = ?"
+                );
 
-                $hasil = $stmt->get_result();
-                $admin = $hasil->fetch_assoc();
+                if (!$stmt) {
+                    $error = "Terjadi kesalahan sistem. Silakan coba lagi.";
 
-                $stmt->close();
-
-                // Hash dummy digunakan jika username tidak ditemukan
-                $dummyHash = '$2y$10$usesomesillystringforsaltuHCHFxFwBr0Aa3XWb8zG5EkK2T8m2';
-
-                $hash = $admin["password_hash"] ?? $dummyHash;
-
-                // Password tetap diverifikasi untuk kedua kondisi
-                $passwordValid = password_verify($password, $hash);
-
-                $loginValid = $passwordValid && $admin !== null;
-
-                if ($loginValid) {
-                    // Menghapus catatan gagal setelah login berhasil
-                    $hapus = $koneksi->prepare(
-                        "DELETE FROM login_gagal WHERE ip = ?"
-                    );
-
-                    if ($hapus) {
-                        $hapus->bind_param("s", $ip);
-                        $hapus->execute();
-                        $hapus->close();
-                    }
-
-                    session_regenerate_id(true);
-
-                    $_SESSION["admin_id"] = $admin["id"];
-                    $_SESSION["admin_username"] = $admin["username"];
-                    $_SESSION["terakhir_aktif"] = time();
-
-                    header("Location: admin.php");
-                    exit;
                 } else {
-                    // Mencatat percobaan login yang gagal
-                    $catat = $koneksi->prepare(
-                        "INSERT INTO login_gagal (ip, waktu)
-                         VALUES (?, NOW())"
-                    );
+                    $stmt->bind_param("s", $username);
+                    $stmt->execute();
 
-                    if ($catat) {
-                        $catat->bind_param("s", $ip);
-                        $catat->execute();
-                        $catat->close();
+                    $hasil = $stmt->get_result();
+                    $admin = $hasil->fetch_assoc();
+
+                    $stmt->close();
+
+                    // Hash dummy digunakan jika username tidak ditemukan.
+                    $dummyHash = '$2y$10$usesomesillystringforsaltuHCHFxFwBr0Aa3XWb8zG5EkK2T8m2';
+
+                    $hash = $admin["password_hash"] ?? $dummyHash;
+
+                    // Memverifikasi password.
+                    $passwordValid = password_verify($password, $hash);
+                    $loginValid = $passwordValid && $admin !== null;
+
+                    if ($loginValid) {
+
+                        // Menghapus catatan gagal setelah login berhasil.
+                        $hapus = $koneksi->prepare(
+                            "DELETE FROM login_gagal WHERE ip = ?"
+                        );
+
+                        if ($hapus) {
+                            $hapus->bind_param("s", $ip);
+                            $hapus->execute();
+                            $hapus->close();
+                        }
+
+                        // Mengganti ID sesi setelah login berhasil.
+                        session_regenerate_id(true);
+
+                        $_SESSION["admin_id"] = $admin["id"];
+                        $_SESSION["admin_username"] = $admin["username"];
+                        $_SESSION["terakhir_aktif"] = time();
+
+                        // Membuat CSRF token baru setelah login.
+                        $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+
+                        header("Location: admin.php");
+                        exit;
+
+                    } else {
+                        // Mencatat percobaan login yang gagal.
+                        $catat = $koneksi->prepare(
+                            "INSERT INTO login_gagal (ip, waktu)
+                             VALUES (?, NOW())"
+                        );
+
+                        if ($catat) {
+                            $catat->bind_param("s", $ip);
+                            $catat->execute();
+                            $catat->close();
+                        }
+
+                        $error = "Username atau password salah.";
                     }
-
-                    $error = "Username atau password salah.";
                 }
             }
         }
@@ -131,7 +160,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             </p>
         <?php endif; ?>
 
-        <form method="POST" action="">
+        <form method="POST" action="login.php">
+
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="<?= htmlspecialchars($_SESSION["csrf_token"]) ?>"
+            >
+
             <label for="username">Username</label>
             <input
                 type="text"

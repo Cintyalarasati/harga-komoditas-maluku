@@ -2,6 +2,24 @@
 require_once __DIR__ . "/config/bootstrap.php";
 require_once "sesi.php";
 
+// Logout hanya boleh melalui metode POST
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    header("Location: admin.php");
+    exit;
+}
+
+// Memeriksa CSRF token
+$token = $_POST["csrf_token"] ?? "";
+
+if (
+    !is_string($token) ||
+    !isset($_SESSION["csrf_token"]) ||
+    !hash_equals($_SESSION["csrf_token"], $token)
+) {
+    header("Location: admin.php");
+    exit;
+}
+
 // Menghapus semua data session
 $_SESSION = [];
 

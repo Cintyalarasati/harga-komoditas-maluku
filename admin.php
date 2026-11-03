@@ -162,7 +162,7 @@ $sql = $koneksi->prepare(
         'Cengkeh',
         'Pala',
         'Bunga Pala'
-     )"
+    )"
 );
 
 $sql->bind_param("s", $wilayah);
@@ -178,6 +178,18 @@ $hasil = $sql->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Harga Komoditas Maluku</title>
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .admin-logout-form {
+            display: inline;
+            margin: 0;
+        }
+
+        .admin-nav .admin-logout {
+            font: inherit;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
@@ -190,7 +202,15 @@ $hasil = $sql->get_result();
     <nav class="admin-nav">
         <a href="index.html">Beranda</a>
         <a href="harga.php">Harga Komoditas</a>
-        <a href="logout.php" class="admin-logout">Logout</a>
+
+        <form method="POST" action="logout.php" class="admin-logout-form">
+            <input
+                type="hidden"
+                name="csrf_token"
+                value="<?= htmlspecialchars($_SESSION["csrf_token"]) ?>"
+            >
+            <button type="submit" class="admin-logout">Logout</button>
+        </form>
     </nav>
 
     <main class="admin-container">
