@@ -1,13 +1,13 @@
 <?php
 require_once __DIR__ . "/config/bootstrap.php";
-require_once "sesi.php";
+require_once __DIR__ . "/sesi.php";
 
 if (!isset($_SESSION["admin_id"])) {
     header("Location: login.php");
     exit;
 }
 
-require_once "koneksi.php";
+require_once __DIR__ . "/koneksi.php";
 
 $wilayah = "Seram Bagian Barat";
 
@@ -19,40 +19,77 @@ $komoditasDiizinkan = [
     "Bunga Pala"
 ];
 
+$hargaMaks = 10000000;
+$hariIni = new DateTime("today");
+
+// Membuat token CSRF jika belum tersedia.
 if (empty($_SESSION["csrf_token"])) {
     $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
 }
 
+// Mengambil pesan flash setelah redirect.
 $pesan = "";
 $jenisPesan = "error";
 
+if (isset($_SESSION["flash"])) {
+    $pesan = $_SESSION["flash"]["pesan"] ?? "";
+    $jenisPesan = $_SESSION["flash"]["jenis"] ?? "success";
+
+    unset($_SESSION["flash"]);
+}
+
+// Memproses formulir.
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $token = $_POST["csrf_token"] ?? "";
 
-    if (!hash_equals($_SESSION["csrf_token"], $token)) {
+    if (
+        !is_string($token) ||
+        !hash_equals($_SESSION["csrf_token"], $token)
+    ) {
         $pesan = "Permintaan tidak valid. Muat ulang halaman.";
     } else {
         $namaKomoditas = $_POST["komoditas"] ?? "";
         $hargaInput = $_POST["harga"] ?? "";
         $tanggalInput = $_POST["tanggal_update"] ?? "";
 
-        $tanggal = DateTime::createFromFormat(
-            "!Y-m-d",
-            $tanggalInput
-        );
+        // Memeriksa format tanggal.
+        $tanggal = null;
+        $tanggalValid = false;
 
-        $tanggalValid = $tanggal &&
-            $tanggal->format("Y-m-d") === $tanggalInput;
+        if (is_string($tanggalInput)) {
+            $tanggal = DateTime::createFromFormat(
+                "!Y-m-d",
+                $tanggalInput
+            );
 
-        if (!in_array($namaKomoditas, $komoditasDiizinkan, true)) {
-            $pesan = "Komoditas tidak valid.";
-        } elseif (
-            !ctype_digit($hargaInput) ||
-            (int) $hargaInput <= 0
+            $tanggalValid = $tanggal &&
+                $tanggal->format("Y-m-d") === $tanggalInput;
+        }
+
+        // Validasi nama komoditas.
+        if (
+            !is_string($namaKomoditas) ||
+            !in_array($namaKomoditas, $komoditasDiizinkan, true)
         ) {
-            $pesan = "Harga harus berupa angka lebih dari nol.";
-        } elseif (!$tanggalValid) {
-            $pesan = "Tanggal pembaruan tidak valid.";
+            $pesan = "Komoditas tidak valid.";
+
+        // Validasi harga.
+        } elseif (
+            !is_string($hargaInput) ||
+            !ctype_digit($hargaInput) ||
+            strlen($hargaInput) > 8 ||
+            (int) $hargaInput <= 0 ||
+            (int) $hargaInput > $hargaMaks
+        ) {
+            $pesan = "Harga harus antara 1 dan 10.000.000 rupiah.";
+
+        // Validasi tanggal.
+        } elseif (
+            !$tanggalValid ||
+            $tanggal > $hariIni
+        ) {
+            $pesan = "Tanggal pembaruan tidak valid atau di masa depan.";
+
         } else {
             $harga = (int) $hargaInput;
             $tanggalSimpan = $tanggal->format("Y-m-d");
@@ -77,19 +114,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 if ($stmt->execute()) {
                     if ($stmt->affected_rows === 1) {
-                        $pesan = "Harga baru berhasil ditambahkan.";
+                        $pesanBerhasil = "Harga baru berhasil ditambahkan.";
                     } elseif ($stmt->affected_rows === 2) {
-                        $pesan = "Harga berhasil diperbarui.";
+                        $pesanBerhasil = "Harga berhasil diperbarui.";
                     } else {
-                        $pesan = "Tidak ada perubahan (data sama).";
+                        $pesanBerhasil = "Tidak ada perubahan (data sama).";
                     }
 
-                    $jenisPesan = "success";
+                    // Menyimpan pesan untuk ditampilkan setelah redirect.
+                    $_SESSION["flash"] = [
+                        "jenis" => "success",
+                        "pesan" => $pesanBerhasil
+                    ];
+
+                    // Mengganti token setelah proses berhasil.
+                    $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+
+                    $stmt->close();
+                    $koneksi->close();
+
+                    // Post/Redirect/Get.
+                    header("Location: admin.php");
+                    exit;
+
                 } else {
                     $pesan = "Gagal menyimpan perubahan harga.";
                 }
 
                 $stmt->close();
+
             } else {
                 $pesan = "Gagal menyiapkan proses penyimpanan harga.";
             }
@@ -97,6 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
+// Mengambil daftar harga dari database.
 $sql = $koneksi->prepare(
     "SELECT komoditas, harga, tanggal_update
      FROM harga_komoditas
@@ -142,8 +196,15 @@ $hasil = $sql->get_result();
     <main class="admin-container">
 
         <section class="admin-welcome">
-            <h2>Selamat Datang, <?= htmlspecialchars($_SESSION["admin_username"]) ?>!</h2>
-            <p>Kelola informasi harga komoditas untuk wilayah Seram Bagian Barat.</p>
+            <h2>
+                Selamat Datang,
+                <?= htmlspecialchars($_SESSION["admin_username"]) ?>!
+            </h2>
+
+            <p>
+                Kelola informasi harga komoditas untuk wilayah
+                Seram Bagian Barat.
+            </p>
         </section>
 
         <section class="admin-card">
@@ -191,6 +252,7 @@ $hasil = $sql->get_result();
                         id="harga"
                         name="harga"
                         min="1"
+                        max="10000000"
                         step="1"
                         placeholder="Contoh: 15000"
                         required
@@ -198,12 +260,15 @@ $hasil = $sql->get_result();
                 </div>
 
                 <div class="admin-form-group">
-                    <label for="tanggal_update">Tanggal Pembaruan Harga</label>
+                    <label for="tanggal_update">
+                        Tanggal Pembaruan Harga
+                    </label>
 
                     <input
                         type="date"
                         id="tanggal_update"
                         name="tanggal_update"
+                        max="<?= date("Y-m-d") ?>"
                         required
                     >
                 </div>
@@ -221,7 +286,8 @@ $hasil = $sql->get_result();
             <h2>Daftar Harga Saat Ini</h2>
 
             <p class="admin-description">
-                Berikut adalah daftar harga komoditas yang tersimpan di database.
+                Berikut adalah daftar harga komoditas yang tersimpan
+                di database.
             </p>
 
             <div class="admin-table-wrapper">
@@ -238,7 +304,9 @@ $hasil = $sql->get_result();
                     <tbody>
                         <?php while ($baris = $hasil->fetch_assoc()): ?>
                             <tr>
-                                <td><?= htmlspecialchars($baris["komoditas"]) ?></td>
+                                <td>
+                                    <?= htmlspecialchars($baris["komoditas"]) ?>
+                                </td>
 
                                 <td>
                                     Rp <?= number_format(
@@ -249,7 +317,9 @@ $hasil = $sql->get_result();
                                     ) ?>
                                 </td>
 
-                                <td><?= htmlspecialchars($baris["tanggal_update"]) ?></td>
+                                <td>
+                                    <?= htmlspecialchars($baris["tanggal_update"]) ?>
+                                </td>
                             </tr>
                         <?php endwhile; ?>
                     </tbody>
