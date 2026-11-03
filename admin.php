@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/config/bootstrap.php";
 require_once __DIR__ . "/sesi.php";
+require_once __DIR__ . "/config/harga.php";
 
 if (!isset($_SESSION["admin_id"])) {
     header("Location: login.php");
@@ -9,15 +10,8 @@ if (!isset($_SESSION["admin_id"])) {
 
 require_once __DIR__ . "/koneksi.php";
 
-$wilayah = "Seram Bagian Barat";
-
-$komoditasDiizinkan = [
-    "Kopra",
-    "Biji Kakao",
-    "Cengkeh",
-    "Pala",
-    "Bunga Pala"
-];
+// Menggunakan wilayah default dari konfigurasi pusat.
+$wilayah = WILAYAH_DEFAULT;
 
 $hargaMaks = 10000000;
 $hariIni = new DateTime("today");
@@ -66,10 +60,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $tanggal->format("Y-m-d") === $tanggalInput;
         }
 
-        // Validasi nama komoditas.
+        // Validasi nama komoditas dari konfigurasi pusat.
         if (
             !is_string($namaKomoditas) ||
-            !in_array($namaKomoditas, $komoditasDiizinkan, true)
+            !in_array($namaKomoditas, DAFTAR_KOMODITAS, true)
         ) {
             $pesan = "Komoditas tidak valid.";
 
@@ -150,25 +144,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 
-// Mengambil daftar harga dari database.
-$sql = $koneksi->prepare(
-    "SELECT komoditas, harga, tanggal_update
-     FROM harga_komoditas
-     WHERE wilayah = ?
-     ORDER BY FIELD(
-        komoditas,
-        'Kopra',
-        'Biji Kakao',
-        'Cengkeh',
-        'Pala',
-        'Bunga Pala'
-    )"
-);
-
-$sql->bind_param("s", $wilayah);
-$sql->execute();
-
-$hasil = $sql->get_result();
+// Mengambil daftar harga melalui fungsi pusat.
+$dataHarga = ambilHarga($koneksi, $wilayah);
 ?>
 
 <!DOCTYPE html>
@@ -223,7 +200,7 @@ $hasil = $sql->get_result();
 
             <p>
                 Kelola informasi harga komoditas untuk wilayah
-                Seram Bagian Barat.
+                <?= htmlspecialchars($wilayah) ?>.
             </p>
         </section>
 
@@ -256,7 +233,7 @@ $hasil = $sql->get_result();
                     <select id="komoditas" name="komoditas" required>
                         <option value="">-- Pilih Komoditas --</option>
 
-                        <?php foreach ($komoditasDiizinkan as $nama): ?>
+                        <?php foreach (DAFTAR_KOMODITAS as $nama): ?>
                             <option value="<?= htmlspecialchars($nama) ?>">
                                 <?= htmlspecialchars($nama) ?>
                             </option>
@@ -322,7 +299,7 @@ $hasil = $sql->get_result();
                     </thead>
 
                     <tbody>
-                        <?php while ($baris = $hasil->fetch_assoc()): ?>
+                        <?php foreach ($dataHarga as $baris): ?>
                             <tr>
                                 <td>
                                     <?= htmlspecialchars($baris["komoditas"]) ?>
@@ -341,7 +318,7 @@ $hasil = $sql->get_result();
                                     <?= htmlspecialchars($baris["tanggal_update"]) ?>
                                 </td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
 
@@ -359,6 +336,5 @@ $hasil = $sql->get_result();
 </html>
 
 <?php
-$sql->close();
 $koneksi->close();
 ?>

@@ -1,54 +1,19 @@
 <?php
 require_once __DIR__ . "/config/bootstrap.php";
-require_once "koneksi.php";
+require_once __DIR__ . "/config/harga.php";
+require_once __DIR__ . "/koneksi.php";
 
-// Daftar kode wilayah dan nama wilayah.
-$daftarWilayah = [
-    "ambon"  => "Kota Ambon",
-    "tual"   => "Kota Tual",
-    "malten" => "Maluku Tengah",
-    "maltra" => "Maluku Tenggara",
-    "kkt"    => "Kepulauan Tanimbar",
-    "buru"   => "Buru",
-    "bursel" => "Buru Selatan",
-    "kep_ar" => "Kepulauan Aru",
-    "sbb"    => "Seram Bagian Barat",
-    "sbt"    => "Seram Bagian Timur",
-    "malbar" => "Maluku Barat Daya"
-];
-
-// Ambil wilayah yang dipilih pengguna.
+// Ambil kode wilayah dari URL.
 $kodeWilayah = $_GET["wilayah"] ?? "";
-$wilayah = $daftarWilayah[$kodeWilayah] ?? "";
+
+// Validasi wilayah berdasarkan konfigurasi.
+$wilayah = DAFTAR_WILAYAH[$kodeWilayah] ?? "";
 
 // Ambil data harga berdasarkan wilayah.
 $dataHarga = [];
 
 if ($wilayah !== "") {
-    $stmt = $koneksi->prepare(
-        "SELECT komoditas, harga, tanggal_update
-         FROM harga_komoditas
-         WHERE wilayah = ?
-         ORDER BY FIELD(
-             komoditas,
-             'Kopra',
-             'Biji Kakao',
-             'Cengkeh',
-             'Pala',
-             'Bunga Pala'
-         )"
-    );
-
-    $stmt->bind_param("s", $wilayah);
-    $stmt->execute();
-
-    $hasil = $stmt->get_result();
-
-    while ($baris = $hasil->fetch_assoc()) {
-        $dataHarga[] = $baris;
-    }
-
-    $stmt->close();
+    $dataHarga = ambilHarga($koneksi, $wilayah);
 }
 
 // Format angka menjadi rupiah.
@@ -136,17 +101,13 @@ $adaDataHarga = count($dataHarga) > 0;
 
                 <select id="wilayah-harga">
                     <option value="">Pilih wilayah</option>
-                    <option value="ambon">Kota Ambon</option>
-                    <option value="tual">Kota Tual</option>
-                    <option value="malten">Kabupaten Maluku Tengah</option>
-                    <option value="maltra">Kabupaten Maluku Tenggara</option>
-                    <option value="kkt">Kabupaten Kepulauan Tanimbar</option>
-                    <option value="buru">Kabupaten Buru</option>
-                    <option value="bursel">Kabupaten Buru Selatan</option>
-                    <option value="kep_ar">Kabupaten Kepulauan Aru</option>
-                    <option value="sbb">Kabupaten Seram Bagian Barat</option>
-                    <option value="sbt">Kabupaten Seram Bagian Timur</option>
-                    <option value="malbar">Kabupaten Maluku Barat Daya</option>
+
+                    <?php foreach (DAFTAR_WILAYAH as $kode => $nama): ?>
+                        <option value="<?= htmlspecialchars($kode) ?>">
+                            <?= htmlspecialchars($nama) ?>
+                        </option>
+                    <?php endforeach; ?>
+
                 </select>
 
             </div>
@@ -191,7 +152,7 @@ $adaDataHarga = count($dataHarga) > 0;
 
                 </div>
 
-            <?php elseif ($kodeWilayah !== "" && isset($daftarWilayah[$kodeWilayah])): ?>
+            <?php elseif ($kodeWilayah !== "" && isset(DAFTAR_WILAYAH[$kodeWilayah])): ?>
 
                 <div class="catatan-harga">
 
@@ -253,3 +214,7 @@ $adaDataHarga = count($dataHarga) > 0;
 
 </body>
 </html>
+
+<?php
+$koneksi->close();
+?>
