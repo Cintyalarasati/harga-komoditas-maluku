@@ -1,6 +1,5 @@
 <?php
-
-// Memulai session dengan pengaturan keamanan
+require_once __DIR__ . "/config/bootstrap.php";
 require_once "sesi.php";
 
 // Menghapus semua data session

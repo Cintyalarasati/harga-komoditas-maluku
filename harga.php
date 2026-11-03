@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . "/config/bootstrap.php";
 require_once "koneksi.php";
 
 // Daftar kode wilayah dan nama wilayah.

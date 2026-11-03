@@ -1,7 +1,7 @@
 <?php
+require_once __DIR__ . "/config/bootstrap.php";
 require_once "sesi.php";
 require_once "koneksi.php";
-$error = "";
 
 // Menampilkan pesan jika sesi admin berakhir
 if (isset($_GET["timeout"]) && $_GET["timeout"] === "1") {

@@ -1,9 +1,10 @@
 <?php
 
+require_once __DIR__ . "/config/bootstrap.php";
+
 // Header respons API
 header("Content-Type: application/json; charset=UTF-8");
 header("Cache-Control: public, max-age=300");
-
 try {
 
     require_once "koneksi.php";
