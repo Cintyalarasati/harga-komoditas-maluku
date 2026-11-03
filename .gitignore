@@ -8,7 +8,7 @@ Thumbs.db
 *.bak
 *.tmp
 
-# File konfigurasi rahasia jika nanti dibuat
+# File konfigurasi rahasia
 .env
 .env.*
 !.env.example
@@ -17,6 +17,5 @@ Thumbs.db
 /koneksi.php
 
 # Konfigurasi dan file pengujian lokal
-/koneksi.php
 /buat_admin.php
 /tes_koneksi.php
