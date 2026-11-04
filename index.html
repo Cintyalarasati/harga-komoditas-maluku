@@ -16,7 +16,7 @@
 
     <!-- Menu navigasi -->
     <nav>
-        <a href="index.html">Beranda</a>
+        <a href="index.html" aria-current="page">Beranda</a>
         <a href="harga.php">Harga Komoditas</a>
         <a href="komoditas.html">Jenis Komoditas</a>
         <a href="tentang.html">Tentang Pengelola</a>
@@ -29,7 +29,10 @@
         <!-- Bagian pengenalan -->
         <section class="pengenalan hero-beranda">
             <div class="hero-teks">
-                <span class="label-hero">🌿 HARGA KOMODITAS MALUKU</span>
+                <span class="label-hero">
+                    <span aria-hidden="true">🌿</span>
+                    HARGA KOMODITAS MALUKU
+                </span>
 
                 <h2>
                     Kenali Harga,<br>
@@ -103,22 +106,28 @@
 
             <h2>Harga Komoditas Terbaru</h2>
 
-            <p>
-                Pilih wilayah untuk melihat harga komoditas yang tersedia.
-            </p>
-
-            <p class="catatan" id="status-harga">
+            <!-- Status perubahan harga diumumkan kepada screen reader -->
+            <p
+                class="catatan"
+                id="status-harga"
+                role="status"
+                aria-live="polite"
+            >
                 Silakan pilih wilayah untuk melihat informasi harga.
             </p>
 
             <div class="tabel-wrapper">
                 <table>
+                    <caption class="sr-only">
+                        Harga komoditas per kilogram menurut wilayah
+                    </caption>
+
                     <thead>
                         <tr>
-                            <th>Komoditas</th>
-                            <th>Wilayah</th>
-                            <th>Harga per Kg</th>
-                            <th>Pembaruan</th>
+                            <th scope="col">Komoditas</th>
+                            <th scope="col">Wilayah</th>
+                            <th scope="col">Harga per Kg</th>
+                            <th scope="col">Pembaruan</th>
                         </tr>
                     </thead>
 
@@ -181,7 +190,7 @@
 
     </main>
 
-        <!-- Bagian bawah website -->
+    <!-- Bagian bawah website -->
     <footer>
         <p>&copy; 2026 Harga Komoditas Maluku</p>
     </footer>

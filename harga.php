@@ -19,7 +19,7 @@
 
     <nav>
         <a href="index.html">Beranda</a>
-        <a href="harga.php">Harga Komoditas</a>
+        <a href="harga.php" aria-current="page">Harga Komoditas</a>
         <a href="komoditas.html">Jenis Komoditas</a>
         <a href="tentang.html">Tentang Pengelola</a>
         <a href="login.php">Pengelola</a>
@@ -49,7 +49,7 @@
 
                 <h3>Harga Komoditas</h3>
 
-                <p id="informasi-wilayah">
+                <p id="informasi-wilayah" role="status" aria-live="polite">
                     Silakan pilih wilayah terlebih dahulu.
                 </p>
 
@@ -86,3 +86,4 @@
 
 </body>
 </html>
+```

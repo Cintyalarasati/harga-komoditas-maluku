@@ -147,9 +147,8 @@ function tampilkanInformasiWilayah() {
 
     if (dataHarga.length === 0) {
         informasiWilayah.textContent =
-            "Data harga untuk wilayah " +
-            namaWilayah +
-            " belum tersedia.";
+            "Pilihan " + namaWilayah +
+            " belum memiliki data harga. Silakan pilih wilayah lain.";
 
         return;
     }
@@ -161,6 +160,8 @@ function tampilkanInformasiWilayah() {
 // Menampilkan data ke tabel atau kartu.
 function tampilkanHarga(status = "normal") {
     const wilayah = pilihanWilayah.value;
+
+    const namaWilayah = daftarNamaWilayah[wilayah] || wilayah;
 
     const kataKunci = pencarian
         ? pencarian.value.toLowerCase().trim()
@@ -238,9 +239,7 @@ function tampilkanHarga(status = "normal") {
 
             const keterangan = document.createElement("p");
             keterangan.textContent =
-                "Data harga untuk wilayah " +
-                daftarNamaWilayah[wilayah] +
-                " belum tersedia.";
+                "Belum ada data harga untuk " + namaWilayah + ".";
 
             pesan.append(judul, keterangan);
             daftarHarga.appendChild(pesan);
@@ -285,15 +284,23 @@ function tampilkanHarga(status = "normal") {
         if (status === "error") {
             statusHarga.textContent =
                 "Data harga gagal dimuat. Silakan coba lagi.";
+
         } else if (!wilayah) {
             statusHarga.textContent =
-                "Silakan pilih wilayah terlebih dahulu.";
+                "Silakan pilih wilayah untuk melihat harga komoditas yang tersedia.";
+
         } else if (dataHarga.length === 0) {
             statusHarga.textContent =
-                "Belum ada data harga untuk wilayah ini.";
+                "Belum ada data harga untuk " + namaWilayah + ".";
+
+        } else if (dataTersaring.length === 0) {
+            statusHarga.textContent =
+                "Tidak ditemukan komoditas yang sesuai di " + namaWilayah + ".";
+
         } else {
             statusHarga.textContent =
-                "Menampilkan " + dataTersaring.length + " data harga.";
+                "Menampilkan " + dataTersaring.length +
+                " data harga untuk " + namaWilayah + ".";
         }
     }
 }
