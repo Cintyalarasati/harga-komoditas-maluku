@@ -217,4 +217,3 @@ $adaDataHarga = count($dataHarga) > 0;
 
 <?php
 $koneksi->close();
-?>
