@@ -406,15 +406,37 @@ footer {
     text-align: center;
 }
 
-.foto-profil img {
+/* Tombol pembuka foto profil */
+.tombol-foto {
+    appearance: none;
+    -webkit-appearance: none;
     display: block;
-    width: 180px;
-    height: 180px;
+    width: 188px;
+    height: 188px;
     margin: 0 auto;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: none;
+    cursor: pointer;
+}
+
+/* Foto profil berbentuk lingkaran */
+.tombol-foto img {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     border: 4px solid #d1e7d8;
     border-radius: 50%;
-    cursor: pointer;
+}
+
+/* Fokus keyboard */
+.tombol-foto:focus-visible {
+    outline: 3px solid #174c35;
+    outline-offset: 5px;
 }
 
 .profil-identitas h2 {
@@ -531,13 +553,6 @@ footer {
    15. PENYESUAIAN LAYAR KECIL
 ===================================== */
 
-@media (max-width: 800px) {
-
-    .kontak-developer {
-        grid-template-columns: 1fr;
-    }
-}
-
 @media (max-width: 600px) {
 
     .profil-developer {
@@ -550,9 +565,10 @@ footer {
         padding: 5px;
     }
 
-    .foto-profil img {
-        width: 160px;
-        height: 160px;
+    /* Menyesuaikan ukuran tombol foto pada HP */
+    .tombol-foto {
+        width: 168px;
+        height: 168px;
     }
 
     .modal-foto {

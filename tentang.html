@@ -30,11 +30,18 @@
             <!-- Kolom foto dan identitas -->
             <div class="profil-identitas">
                 <div class="foto-profil">
-                    <img
-                        src="images/profil.jpg"
-                        alt="Foto pengembang website"
-                        id="foto-profil"
+                    <button
+                        type="button"
+                        id="buka-foto"
+                        class="tombol-foto"
+                        aria-label="Perbesar foto profil"
                     >
+                        <img
+                            src="images/profil.jpg"
+                            alt="Foto pengembang website"
+                            id="foto-profil"
+                        >
+                    </button>
                 </div>
 
                 <h2>Cintya Larasati Tunjungsari</h2>
@@ -100,13 +107,14 @@
         </section>
     </main>
 
-    <!-- Tampilan foto saat diklik -->
+    <!-- Modal foto profil -->
     <div
         id="modal-foto"
         class="modal-foto"
         role="dialog"
         aria-modal="true"
         aria-label="Foto profil ukuran besar"
+        aria-hidden="true"
     >
         <button
             type="button"
@@ -127,35 +135,69 @@
         <p>&copy; 2026 Harga Komoditas Maluku</p>
     </footer>
 
-    <!-- JavaScript untuk fitur foto profil -->
+    <!-- JavaScript aksesibilitas modal foto -->
     <script>
+        const tombolBuka = document.getElementById("buka-foto");
         const fotoProfil = document.getElementById("foto-profil");
         const modalFoto = document.getElementById("modal-foto");
         const fotoBesar = document.getElementById("foto-besar");
         const tombolTutup = document.getElementById("tutup-foto");
 
-        // Klik foto profil untuk menampilkan foto besar
-        fotoProfil.addEventListener("click", function () {
+        // Memeriksa apakah modal sedang terbuka.
+        function modalSedangTerbuka() {
+            return modalFoto.style.display === "flex";
+        }
+
+        // Membuka modal foto.
+        function bukaModalFoto() {
             fotoBesar.src = fotoProfil.src;
+
             modalFoto.style.display = "flex";
-        });
+            modalFoto.setAttribute("aria-hidden", "false");
 
-        // Klik tombol X untuk menutup foto
-        tombolTutup.addEventListener("click", function () {
+            // Memindahkan fokus ke tombol tutup.
+            tombolTutup.focus();
+        }
+
+        // Menutup modal foto.
+        function tutupModalFoto() {
+            if (!modalSedangTerbuka()) return;
+
             modalFoto.style.display = "none";
-        });
+            modalFoto.setAttribute("aria-hidden", "true");
 
-        // Klik area gelap di luar foto untuk menutupnya
+            // Mengembalikan fokus ke tombol pembuka foto.
+            tombolBuka.focus();
+        }
+
+        // Membuka foto dengan mouse atau keyboard.
+        tombolBuka.addEventListener("click", bukaModalFoto);
+
+        // Menutup foto melalui tombol X.
+        tombolTutup.addEventListener("click", tutupModalFoto);
+
+        // Menutup foto ketika area gelap diklik.
         modalFoto.addEventListener("click", function (event) {
             if (event.target === modalFoto) {
-                modalFoto.style.display = "none";
+                tutupModalFoto();
             }
         });
 
-        // Tekan Escape untuk menutup foto
+        // Menangani tombol Escape dan menjaga fokus keyboard.
         document.addEventListener("keydown", function (event) {
+            if (!modalSedangTerbuka()) return;
+
+            // Escape untuk menutup modal.
             if (event.key === "Escape") {
-                modalFoto.style.display = "none";
+                event.preventDefault();
+                tutupModalFoto();
+                return;
+            }
+
+            // Menjaga fokus tetap di dalam modal.
+            if (event.key === "Tab") {
+                event.preventDefault();
+                tombolTutup.focus();
             }
         });
     </script>
