@@ -1,63 +1,3 @@
-<?php
-require_once __DIR__ . "/config/bootstrap.php";
-require_once __DIR__ . "/config/harga.php";
-require_once __DIR__ . "/koneksi.php";
-
-// Ambil kode wilayah dari URL.
-$kodeWilayah = $_GET["wilayah"] ?? "";
-
-// Validasi wilayah berdasarkan konfigurasi.
-$wilayah = DAFTAR_WILAYAH[$kodeWilayah] ?? "";
-
-// Ambil data harga berdasarkan wilayah.
-$dataHarga = [];
-
-if ($wilayah !== "") {
-    $dataHarga = ambilHarga($koneksi, $wilayah);
-}
-
-// Format angka menjadi rupiah.
-function rupiah($angka)
-{
-    return "Rp " . number_format((float) $angka, 0, ",", ".");
-}
-
-// Format tanggal menjadi tanggal Indonesia singkat.
-function tanggalIndonesia($tanggal)
-{
-    if (empty($tanggal)) {
-        return "-";
-    }
-
-    $bulan = [
-        1 => "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "Mei",
-        "Jun",
-        "Jul",
-        "Agu",
-        "Sep",
-        "Okt",
-        "Nov",
-        "Des"
-    ];
-
-    $waktu = strtotime($tanggal);
-
-    if ($waktu === false) {
-        return "-";
-    }
-
-    return date("j", $waktu) . " " .
-        $bulan[(int) date("n", $waktu)] . " " .
-        date("Y", $waktu);
-}
-
-$adaDataHarga = count($dataHarga) > 0;
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -101,72 +41,22 @@ $adaDataHarga = count($dataHarga) > 0;
 
                 <select id="wilayah-harga">
                     <option value="">Pilih wilayah</option>
-
-                    <?php foreach (DAFTAR_WILAYAH as $kode => $nama): ?>
-                        <option value="<?= htmlspecialchars($kode) ?>">
-                            <?= htmlspecialchars($nama) ?>
-                        </option>
-                    <?php endforeach; ?>
-
                 </select>
 
             </div>
 
-            <?php if ($adaDataHarga): ?>
+            <div class="informasi-pembaruan">
 
-                <div class="informasi-pembaruan">
+                <h3>Harga Komoditas</h3>
 
-                    <h3>Harga Komoditas</h3>
+                <p id="informasi-wilayah">
+                    Silakan pilih wilayah terlebih dahulu.
+                </p>
 
-                    <p>
-                        Wilayah:
-                        <?= htmlspecialchars($wilayah) ?>, Maluku
-                    </p>
+            </div>
 
-                </div>
-
-                <div id="daftar-harga" class="daftar-komoditas kartu-harga">
-
-                    <?php foreach ($dataHarga as $item): ?>
-
-                        <div class="item-komoditas">
-
-                            <h4>
-                                <?= htmlspecialchars($item["komoditas"]) ?>
-                            </h4>
-
-                            <p>Harga per kilogram</p>
-
-                            <p class="nilai-harga">
-                                <?= htmlspecialchars(rupiah($item["harga"])) ?>
-                            </p>
-
-                            <p class="tanggal-update">
-                                Terakhir diperbarui:
-                                <?= htmlspecialchars(tanggalIndonesia($item["tanggal_update"])) ?>
-                            </p>
-
-                        </div>
-
-                    <?php endforeach; ?>
-
-                </div>
-
-            <?php elseif ($kodeWilayah !== "" && isset(DAFTAR_WILAYAH[$kodeWilayah])): ?>
-
-                <div class="catatan-harga">
-
-                    <h3>Harga Belum Tersedia</h3>
-
-                    <p>
-                        Data harga untuk wilayah
-                        <?= htmlspecialchars($wilayah) ?>
-                        belum tersedia.
-                    </p>
-
-                </div>
-
-            <?php endif; ?>
+            <div id="daftar-harga" class="daftar-komoditas kartu-harga">
+            </div>
 
             <div class="catatan-harga">
 
@@ -192,28 +82,7 @@ $adaDataHarga = count($dataHarga) > 0;
         <p>&copy; 2026 Harga Komoditas Maluku</p>
     </footer>
 
-    <script>
-        const pilihanWilayah = document.getElementById("wilayah-harga");
-        const parameter = new URLSearchParams(window.location.search);
-
-        // Pertahankan pilihan wilayah setelah halaman dimuat.
-        pilihanWilayah.value = parameter.get("wilayah") || "";
-
-        // Muat ulang halaman ketika pengguna memilih wilayah.
-        pilihanWilayah.addEventListener("change", function () {
-            const wilayah = pilihanWilayah.value;
-
-            if (wilayah === "") {
-                window.location.href = "harga.php";
-            } else {
-                window.location.href =
-                    "harga.php?wilayah=" + encodeURIComponent(wilayah);
-            }
-        });
-    </script>
+    <script src="js/harga.js" defer></script>
 
 </body>
 </html>
-
-<?php
-$koneksi->close();
