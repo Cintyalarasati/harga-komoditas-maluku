@@ -88,16 +88,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $harga = (int) $hargaInput;
             $tanggalSimpan = $tanggal->format("Y-m-d");
 
-            $stmt = $koneksi->prepare(
-                "INSERT INTO harga_komoditas
-                 (wilayah, komoditas, harga, tanggal_update)
-                 VALUES (?, ?, ?, ?)
-                 ON DUPLICATE KEY UPDATE
-                    harga = VALUES(harga),
-                    tanggal_update = VALUES(tanggal_update)"
-            );
+            try {
+                // Memulai transaksi database.
+                $koneksi->begin_transaction();
 
-            if ($stmt) {
+                // 1. Menyimpan atau memperbarui harga saat ini.
+                $stmt = $koneksi->prepare(
+                    "INSERT INTO harga_komoditas
+                     (wilayah, komoditas, harga, tanggal_update)
+                     VALUES (?, ?, ?, ?)
+                     ON DUPLICATE KEY UPDATE
+                        harga = VALUES(harga),
+                        tanggal_update = VALUES(tanggal_update)"
+                );
+
+                if (!$stmt) {
+                    throw new Exception(
+                        "Gagal menyiapkan penyimpanan harga."
+                    );
+                }
+
                 $stmt->bind_param(
                     "ssis",
                     $wilayah,
@@ -106,39 +116,93 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $tanggalSimpan
                 );
 
-                if ($stmt->execute()) {
-                    if ($stmt->affected_rows === 1) {
-                        $pesanBerhasil = "Harga baru berhasil ditambahkan.";
-                    } elseif ($stmt->affected_rows === 2) {
-                        $pesanBerhasil = "Harga berhasil diperbarui.";
-                    } else {
-                        $pesanBerhasil = "Tidak ada perubahan (data sama).";
-                    }
-
-                    // Menyimpan pesan untuk ditampilkan setelah redirect.
-                    $_SESSION["flash"] = [
-                        "jenis" => "success",
-                        "pesan" => $pesanBerhasil
-                    ];
-
-                    // Mengganti token setelah proses berhasil.
-                    $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
-
+                if (!$stmt->execute()) {
                     $stmt->close();
-                    $koneksi->close();
 
-                    // Post/Redirect/Get.
-                    header("Location: admin.php");
-                    exit;
-
-                } else {
-                    $pesan = "Gagal menyimpan perubahan harga.";
+                    throw new Exception(
+                        "Gagal menyimpan harga."
+                    );
                 }
+
+                // Menentukan jenis perubahan harga.
+                $jumlahPerubahan = $stmt->affected_rows;
 
                 $stmt->close();
 
-            } else {
-                $pesan = "Gagal menyiapkan proses penyimpanan harga.";
+                if ($jumlahPerubahan === 1) {
+                    $pesanBerhasil = "Harga baru berhasil ditambahkan.";
+                } elseif ($jumlahPerubahan === 2) {
+                    $pesanBerhasil = "Harga berhasil diperbarui.";
+                } else {
+                    $pesanBerhasil = "Tidak ada perubahan (data sama).";
+                }
+
+                // 2. Mencatat perubahan ke tabel riwayat_harga.
+                $adminId = (int) $_SESSION["admin_id"];
+
+                $log = $koneksi->prepare(
+                    "INSERT INTO riwayat_harga
+                     (admin_id, wilayah, komoditas, harga, tanggal_update)
+                     VALUES (?, ?, ?, ?, ?)"
+                );
+
+                if (!$log) {
+                    throw new Exception(
+                        "Gagal menyiapkan riwayat harga."
+                    );
+                }
+
+                $log->bind_param(
+                    "issis",
+                    $adminId,
+                    $wilayah,
+                    $namaKomoditas,
+                    $harga,
+                    $tanggalSimpan
+                );
+
+                if (!$log->execute()) {
+                    $log->close();
+
+                    throw new Exception(
+                        "Gagal mencatat riwayat harga."
+                    );
+                }
+
+                $log->close();
+
+                // 3. Mengesahkan kedua proses jika berhasil.
+                if (!$koneksi->commit()) {
+                    throw new Exception(
+                        "Gagal menyelesaikan transaksi database."
+                    );
+                }
+
+                // Menyimpan pesan untuk ditampilkan setelah redirect.
+                $_SESSION["flash"] = [
+                    "jenis" => "success",
+                    "pesan" => $pesanBerhasil
+                ];
+
+                // Mengganti token setelah proses berhasil.
+                $_SESSION["csrf_token"] = bin2hex(random_bytes(32));
+
+                $koneksi->close();
+
+                // Post/Redirect/Get.
+                header("Location: admin.php");
+                exit;
+
+            } catch (Throwable $e) {
+                // Jika salah satu proses gagal, batalkan semuanya.
+                $koneksi->rollback();
+
+                error_log(
+                    "Gagal menyimpan harga dan riwayat: " .
+                    $e->getMessage()
+                );
+
+                $pesan = "Gagal menyimpan harga. Silakan coba kembali.";
             }
         }
     }

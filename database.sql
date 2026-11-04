@@ -27,6 +27,24 @@ CREATE TABLE IF NOT EXISTS harga_komoditas (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_general_ci;
 
+-- Tabel riwayat perubahan harga
+CREATE TABLE IF NOT EXISTS riwayat_harga (
+    id INT(11) NOT NULL AUTO_INCREMENT,
+    admin_id INT(11) NOT NULL,
+    wilayah VARCHAR(100) NOT NULL,
+    komoditas VARCHAR(100) NOT NULL,
+    harga BIGINT(20) UNSIGNED NOT NULL,
+    tanggal_update DATE NOT NULL,
+    dibuat_pada TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_riwayat_admin (admin_id),
+    KEY idx_riwayat_komoditas (wilayah, komoditas),
+    CONSTRAINT fk_riwayat_admin
+        FOREIGN KEY (admin_id)
+        REFERENCES admin(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+COLLATE=utf8mb4_general_ci;
+
 -- Tabel percobaan login gagal
 CREATE TABLE IF NOT EXISTS login_gagal (
     id BIGINT(20) NOT NULL AUTO_INCREMENT,
