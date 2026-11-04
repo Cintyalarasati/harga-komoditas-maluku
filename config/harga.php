@@ -39,12 +39,11 @@ function ambilHarga(mysqli $koneksi, string $wilayah): array
     );
 
     $stmt = $koneksi->prepare(
-        "SELECT komoditas, harga, tanggal_update
-         FROM harga_komoditas
-         WHERE wilayah = ?
-         ORDER BY FIELD(komoditas, $urutan)"
-    );
-
+    "SELECT wilayah, komoditas, harga, tanggal_update
+     FROM harga_komoditas
+     WHERE wilayah = ?
+     ORDER BY FIELD(komoditas, $urutan)"
+);
     $stmt->bind_param("s", $wilayah);
     $stmt->execute();
 
