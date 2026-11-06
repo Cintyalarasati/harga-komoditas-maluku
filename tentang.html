@@ -19,7 +19,7 @@
         <a href="index.html">Beranda</a>
         <a href="harga.php">Harga Komoditas</a>
         <a href="komoditas.html">Jenis Komoditas</a>
-        <a href="tentang.html">Tentang Pengelola</a>
+        <a href="tentang.html" aria-current="page">Tentang Pengelola</a>
         <a href="login.php">Pengelola</a>
     </nav>
 
@@ -36,15 +36,15 @@
                         class="tombol-foto"
                         aria-label="Perbesar foto profil"
                     >
-                    <img
-                    id="foto-profil"
-                    src="images/profil.webp"
-                    alt="Foto pengembang website"
-                    width="1080"
-                    height="720"
-                    loading="lazy"
-                    decoding="async"
-                    >
+                        <img
+                            id="foto-profil"
+                            src="images/profil.webp"
+                            alt="Foto pengembang website"
+                            width="1080"
+                            height="720"
+                            loading="lazy"
+                            decoding="async"
+                        >
                     </button>
                 </div>
 
@@ -140,71 +140,7 @@
     </footer>
 
     <!-- JavaScript aksesibilitas modal foto -->
-    <script>
-        const tombolBuka = document.getElementById("buka-foto");
-        const fotoProfil = document.getElementById("foto-profil");
-        const modalFoto = document.getElementById("modal-foto");
-        const fotoBesar = document.getElementById("foto-besar");
-        const tombolTutup = document.getElementById("tutup-foto");
-
-        // Memeriksa apakah modal sedang terbuka.
-        function modalSedangTerbuka() {
-            return modalFoto.style.display === "flex";
-        }
-
-        // Membuka modal foto.
-        function bukaModalFoto() {
-            fotoBesar.src = fotoProfil.src;
-
-            modalFoto.style.display = "flex";
-            modalFoto.setAttribute("aria-hidden", "false");
-
-            // Memindahkan fokus ke tombol tutup.
-            tombolTutup.focus();
-        }
-
-        // Menutup modal foto.
-        function tutupModalFoto() {
-            if (!modalSedangTerbuka()) return;
-
-            modalFoto.style.display = "none";
-            modalFoto.setAttribute("aria-hidden", "true");
-
-            // Mengembalikan fokus ke tombol pembuka foto.
-            tombolBuka.focus();
-        }
-
-        // Membuka foto dengan mouse atau keyboard.
-        tombolBuka.addEventListener("click", bukaModalFoto);
-
-        // Menutup foto melalui tombol X.
-        tombolTutup.addEventListener("click", tutupModalFoto);
-
-        // Menutup foto ketika area gelap diklik.
-        modalFoto.addEventListener("click", function (event) {
-            if (event.target === modalFoto) {
-                tutupModalFoto();
-            }
-        });
-
-        // Menangani tombol Escape dan menjaga fokus keyboard.
-        document.addEventListener("keydown", function (event) {
-            if (!modalSedangTerbuka()) return;
-
-            // Escape untuk menutup modal.
-            if (event.key === "Escape") {
-                event.preventDefault();
-                tutupModalFoto();
-                return;
-            }
-
-            // Menjaga fokus tetap di dalam modal.
-            if (event.key === "Tab") {
-                event.preventDefault();
-                tombolTutup.focus();
-            }
-        });
-    </script>
+    <script src="js/tentang.js" defer></script>
 
 </body>
 </html>
