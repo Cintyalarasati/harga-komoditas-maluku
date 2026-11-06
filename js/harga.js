@@ -35,51 +35,68 @@ function formatRupiah(angka) {
 function formatTanggal(tanggal) {
     if (!tanggal) return "-";
 
-    const bagian = tanggal.split("-");
+    const tanggalLokal = new Date(tanggal + "T00:00:00");
 
-    if (bagian.length !== 3) return tanggal;
+    if (Number.isNaN(tanggalLokal.getTime())) {
+        return tanggal;
+    }
 
-    const tanggalLokal = new Date(
-        Number(bagian[0]),
-        Number(bagian[1]) - 1,
-        Number(bagian[2])
-    );
-
-    return tanggalLokal.toLocaleDateString("id-ID", {
+    return new Intl.DateTimeFormat("id-ID", {
         day: "numeric",
         month: "short",
         year: "numeric"
-    });
+    }).format(tanggalLokal);
 }
 
 // Mengambil daftar wilayah dari api_wilayah.php.
 async function ambilDaftarWilayah() {
-    const respons = await fetch("api_wilayah.php");
+    if (!pilihanWilayah) return;
 
-    if (!respons.ok) {
-        throw new Error("Gagal mengambil daftar wilayah.");
+    pilihanWilayah.disabled = true;
+
+    if (informasiWilayah) {
+        informasiWilayah.textContent = "Memuat daftar wilayah...";
     }
 
-    daftarNamaWilayah = await respons.json();
+    if (statusHarga) {
+        statusHarga.textContent = "Memuat daftar wilayah...";
+    }
 
-    pilihanWilayah.innerHTML =
-        '<option value="">Pilih wilayah</option>';
+    try {
+        const respons = await fetch("api_wilayah.php");
 
-    Object.entries(daftarNamaWilayah).forEach(([kode, nama]) => {
-        const opsi = document.createElement("option");
+        if (!respons.ok) {
+            throw new Error("Gagal mengambil daftar wilayah.");
+        }
 
-        opsi.value = kode;
-        opsi.textContent = nama;
+        daftarNamaWilayah = await respons.json();
 
-        pilihanWilayah.appendChild(opsi);
-    });
+        // Mengosongkan pilihan wilayah sebelumnya.
+        const opsiAwal = document.createElement("option");
+        opsiAwal.value = "";
+        opsiAwal.textContent = "Pilih wilayah";
 
-    // Membaca pilihan wilayah dari URL.
-    const parameterURL = new URLSearchParams(window.location.search);
-    const wilayahURL = parameterURL.get("wilayah");
+        pilihanWilayah.replaceChildren(opsiAwal);
 
-    if (wilayahURL && daftarNamaWilayah[wilayahURL]) {
-        pilihanWilayah.value = wilayahURL;
+        Object.entries(daftarNamaWilayah).forEach(([kode, nama]) => {
+            const opsi = document.createElement("option");
+
+            opsi.value = kode;
+            opsi.textContent = nama;
+
+            pilihanWilayah.appendChild(opsi);
+        });
+
+        // Membaca pilihan wilayah dari URL.
+        const parameterURL = new URLSearchParams(window.location.search);
+        const wilayahURL = parameterURL.get("wilayah");
+
+        if (wilayahURL && daftarNamaWilayah[wilayahURL]) {
+            pilihanWilayah.value = wilayahURL;
+        }
+
+    } finally {
+        pilihanWilayah.disabled = false;
     }
 
     await ambilDataHarga();
@@ -96,11 +113,23 @@ async function ambilDataHarga() {
         if (pilihanWilayah.id === "wilayah-harga") {
             const alamat = new URL(window.location.href);
             alamat.searchParams.delete("wilayah");
+
             window.history.replaceState({}, "", alamat);
         }
 
         tampilkanHarga();
         return;
+    }
+
+    // Menonaktifkan dropdown selama data dimuat.
+    pilihanWilayah.disabled = true;
+
+    if (informasiWilayah) {
+        informasiWilayah.textContent = "Memuat data harga...";
+    }
+
+    if (statusHarga) {
+        statusHarga.textContent = "Memuat data harga...";
     }
 
     try {
@@ -118,6 +147,7 @@ async function ambilDataHarga() {
         if (pilihanWilayah.id === "wilayah-harga") {
             const alamat = new URL(window.location.href);
             alamat.searchParams.set("wilayah", wilayah);
+
             window.history.replaceState({}, "", alamat);
         }
 
@@ -128,6 +158,10 @@ async function ambilDataHarga() {
 
         dataHarga = [];
         tampilkanHarga("error");
+
+    } finally {
+        // Mengaktifkan kembali dropdown setelah selesai.
+        pilihanWilayah.disabled = false;
     }
 }
 
@@ -175,7 +209,8 @@ function tampilkanHarga(status = "normal") {
     if (informasiWilayah) {
         tampilkanInformasiWilayah();
 
-        const judul = informasiWilayah.parentElement.querySelector("h3");
+        const judul =
+            informasiWilayah.parentElement.querySelector("h3");
 
         if (judul) {
             judul.textContent =
@@ -189,7 +224,7 @@ function tampilkanHarga(status = "normal") {
 
     // Tampilan tabel di index.html.
     if (tabelHarga) {
-        tabelHarga.innerHTML = "";
+        tabelHarga.replaceChildren();
 
         dataTersaring.forEach(item => {
             const baris = document.createElement("tr");
@@ -215,7 +250,7 @@ function tampilkanHarga(status = "normal") {
 
     // Tampilan kartu di harga.php.
     if (daftarHarga) {
-        daftarHarga.innerHTML = "";
+        daftarHarga.replaceChildren();
 
         if (status === "error") {
             const pesan = document.createElement("p");
