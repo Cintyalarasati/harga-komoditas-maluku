@@ -1,0 +1,34 @@
+{
+    "name": "harga-komoditas-maluku",
+    "version": "1.0.0",
+    "description": "Website informasi harga komoditas lokal di wilayah Seram Bagian Barat (SBB), Maluku.",
+    "private": true,
+    "main": "index.js",
+    "scripts": {
+        "format": "prettier --write \"css/**/*.css\" \"js/**/*.js\" \"README.md\" \"*.json\"",
+        "format:check": "prettier --check \"css/**/*.css\" \"js/**/*.js\" \"README.md\" \"*.json\"",
+        "lint:js": "eslint \"js/**/*.js\"",
+        "lint:css": "stylelint \"css/**/*.css\"",
+        "lint": "npm run lint:js && npm run lint:css"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Cintyalarasati/harga-komoditas-maluku.git"
+    },
+    "keywords": [],
+    "author": "Cintya Larasati Tunjungsari",
+    "license": "MIT",
+    "type": "module",
+    "bugs": {
+        "url": "https://github.com/Cintyalarasati/harga-komoditas-maluku/issues"
+    },
+    "homepage": "https://github.com/Cintyalarasati/harga-komoditas-maluku#readme",
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.14.0",
+        "globals": "^17.14.0",
+        "prettier": "^3.9.10",
+        "stylelint": "^18.0.0",
+        "stylelint-config-standard": "^41.0.0"
+    }
+}

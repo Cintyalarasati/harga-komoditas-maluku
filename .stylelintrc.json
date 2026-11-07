@@ -1,0 +1,12 @@
+{
+    "extends": ["stylelint-config-standard"],
+    "rules": {
+        "color-function-notation": null,
+        "alpha-value-notation": null,
+        "declaration-empty-line-before": null,
+        "custom-property-pattern": null,
+        "no-descending-specificity": null,
+        "property-no-deprecated": null,
+        "declaration-block-no-duplicate-properties": null
+    }
+}

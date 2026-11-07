@@ -11,15 +11,11 @@ body {
     align-items: center;
     padding: 24px;
     font-family: Arial, sans-serif;
-    color: #ffffff;
+    color: #fff;
 
     /* Latar belakang menggunakan gambar lokal */
     background:
-        linear-gradient(
-            rgba(15, 23, 42, 0.35),
-            rgba(15, 23, 42, 0.65)
-        ),
-        url("../images/pulau.webp");
+        linear-gradient(rgb(15, 23, 42, 0.35), rgb(15, 23, 42, 0.65)), url("../images/pulau.webp");
 
     background-size: cover;
     background-position: center;
@@ -31,14 +27,14 @@ body {
     width: 100%;
     max-width: 420px;
     padding: 36px;
-    border: 1px solid rgba(255, 255, 255, 0.35);
+    border: 1px solid rgb(255, 255, 255, 0.35);
     border-radius: 18px;
 
-    background: rgba(15, 23, 42, 0.42);
+    background: rgb(15, 23, 42, 0.42);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
 
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 20px 50px rgb(0, 0, 0, 0.25);
 }
 
 /* ===== Judul ===== */
@@ -49,7 +45,7 @@ body {
 
 .login-header h1 {
     margin: 0 0 10px;
-    color: #ffffff;
+    color: #fff;
     font-size: 30px;
     line-height: 1.3;
     letter-spacing: 0.5px;
@@ -92,15 +88,17 @@ body {
     margin: 0;
     padding: 12px 14px;
 
-    border: 1px solid rgba(255, 255, 255, 0.45);
+    border: 1px solid rgb(255, 255, 255, 0.45);
     border-radius: 8px;
     outline: none;
 
-    background: rgba(255, 255, 255, 0.12);
-    color: #ffffff;
+    background: rgb(255, 255, 255, 0.12);
+    color: #fff;
     font-size: 15px;
 
-    transition: border-color 0.25s, background 0.25s;
+    transition:
+        border-color 0.25s,
+        background 0.25s;
 }
 
 /* Warna teks saat mengetik */
@@ -111,8 +109,8 @@ body {
 /* Efek ketika kolom dipilih */
 .login-container input[type="text"]:focus,
 .login-container input[type="password"]:focus {
-    border-color: #ffffff;
-    background: rgba(255, 255, 255, 0.2);
+    border-color: #fff;
+    background: rgb(255, 255, 255, 0.2);
 }
 
 /* ===== Tombol masuk ===== */
@@ -126,14 +124,16 @@ body {
     border: none;
     border-radius: 8px;
 
-    background: #ffffff;
+    background: #fff;
     color: #334155;
 
     font-size: 15px;
     font-weight: bold;
     cursor: pointer;
 
-    transition: background 0.25s, transform 0.25s;
+    transition:
+        background 0.25s,
+        transform 0.25s;
 }
 
 .login-container button[type="submit"]:hover {
@@ -146,14 +146,14 @@ body {
     margin: 0 0 18px;
     padding: 12px;
     border-radius: 8px;
-    background: rgba(127, 29, 29, 0.8);
-    color: #ffffff;
+    background: rgb(127, 29, 29, 0.8);
+    color: #fff;
     font-size: 14px;
     line-height: 1.5;
 }
 
 /* ===== Tampilan ponsel ===== */
-@media (max-width: 480px) {
+@media (width <= 480px) {
     body {
         padding: 18px;
     }

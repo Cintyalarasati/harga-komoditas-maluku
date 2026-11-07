@@ -5,8 +5,7 @@
 
 // Mengambil elemen dropdown wilayah.
 const pilihanWilayah =
-    document.getElementById("wilayah") ||
-    document.getElementById("wilayah-harga");
+    document.getElementById("wilayah") || document.getElementById("wilayah-harga");
 
 // Mengambil elemen halaman.
 const tabelHarga = document.querySelector(".tabel-wrapper tbody");
@@ -94,7 +93,6 @@ async function ambilDaftarWilayah() {
         if (wilayahURL && daftarNamaWilayah[wilayahURL]) {
             pilihanWilayah.value = wilayahURL;
         }
-
     } finally {
         pilihanWilayah.disabled = false;
     }
@@ -133,9 +131,7 @@ async function ambilDataHarga() {
     }
 
     try {
-        const respons = await fetch(
-            "api_harga.php?wilayah=" + encodeURIComponent(wilayah)
-        );
+        const respons = await fetch("api_harga.php?wilayah=" + encodeURIComponent(wilayah));
 
         if (!respons.ok) {
             throw new Error("Gagal mengambil data harga.");
@@ -152,13 +148,11 @@ async function ambilDataHarga() {
         }
 
         tampilkanHarga();
-
     } catch (error) {
         console.error(error);
 
         dataHarga = [];
         tampilkanHarga("error");
-
     } finally {
         // Mengaktifkan kembali dropdown setelah selesai.
         pilihanWilayah.disabled = false;
@@ -172,8 +166,7 @@ function tampilkanInformasiWilayah() {
     const wilayah = pilihanWilayah.value;
 
     if (!wilayah) {
-        informasiWilayah.textContent =
-            "Silakan pilih wilayah terlebih dahulu.";
+        informasiWilayah.textContent = "Silakan pilih wilayah terlebih dahulu.";
         return;
     }
 
@@ -181,14 +174,12 @@ function tampilkanInformasiWilayah() {
 
     if (dataHarga.length === 0) {
         informasiWilayah.textContent =
-            "Pilihan " + namaWilayah +
-            " belum memiliki data harga. Silakan pilih wilayah lain.";
+            "Pilihan " + namaWilayah + " belum memiliki data harga. Silakan pilih wilayah lain.";
 
         return;
     }
 
-    informasiWilayah.textContent =
-        "Wilayah: " + namaWilayah + ", Maluku";
+    informasiWilayah.textContent = "Wilayah: " + namaWilayah + ", Maluku";
 }
 
 // Menampilkan data ke tabel atau kartu.
@@ -197,11 +188,9 @@ function tampilkanHarga(status = "normal") {
 
     const namaWilayah = daftarNamaWilayah[wilayah] || wilayah;
 
-    const kataKunci = pencarian
-        ? pencarian.value.toLowerCase().trim()
-        : "";
+    const kataKunci = pencarian ? pencarian.value.toLowerCase().trim() : "";
 
-    const dataTersaring = dataHarga.filter(item =>
+    const dataTersaring = dataHarga.filter((item) =>
         String(item.komoditas).toLowerCase().includes(kataKunci)
     );
 
@@ -209,16 +198,14 @@ function tampilkanHarga(status = "normal") {
     if (informasiWilayah) {
         tampilkanInformasiWilayah();
 
-        const judul =
-            informasiWilayah.parentElement.querySelector("h3");
+        const judul = informasiWilayah.parentElement.querySelector("h3");
 
         if (judul) {
-            judul.textContent =
-                !wilayah
-                    ? "Harga Komoditas"
-                    : dataHarga.length === 0
-                        ? "Harga Belum Tersedia"
-                        : "Harga Komoditas";
+            judul.textContent = !wilayah
+                ? "Harga Komoditas"
+                : dataHarga.length === 0
+                  ? "Harga Belum Tersedia"
+                  : "Harga Komoditas";
         }
     }
 
@@ -226,7 +213,7 @@ function tampilkanHarga(status = "normal") {
     if (tabelHarga) {
         tabelHarga.replaceChildren();
 
-        dataTersaring.forEach(item => {
+        dataTersaring.forEach((item) => {
             const baris = document.createElement("tr");
 
             const nama = document.createElement("td");
@@ -234,8 +221,7 @@ function tampilkanHarga(status = "normal") {
 
             const kolomWilayah = document.createElement("td");
             kolomWilayah.className = "wilayah-harga";
-            kolomWilayah.textContent =
-                daftarNamaWilayah[wilayah] || "-";
+            kolomWilayah.textContent = daftarNamaWilayah[wilayah] || "-";
 
             const harga = document.createElement("td");
             harga.textContent = formatRupiah(item.harga);
@@ -255,15 +241,12 @@ function tampilkanHarga(status = "normal") {
         if (status === "error") {
             const pesan = document.createElement("p");
             pesan.className = "catatan-harga";
-            pesan.textContent =
-                "Data harga gagal dimuat. Silakan coba lagi.";
+            pesan.textContent = "Data harga gagal dimuat. Silakan coba lagi.";
 
             daftarHarga.appendChild(pesan);
-
         } else if (!wilayah) {
             // Belum memilih wilayah.
             // Tidak menampilkan kartu.
-
         } else if (dataHarga.length === 0) {
             // Wilayah dipilih tetapi belum memiliki data.
             const pesan = document.createElement("div");
@@ -273,22 +256,19 @@ function tampilkanHarga(status = "normal") {
             judul.textContent = "Harga Belum Tersedia";
 
             const keterangan = document.createElement("p");
-            keterangan.textContent =
-                "Belum ada data harga untuk " + namaWilayah + ".";
+            keterangan.textContent = "Belum ada data harga untuk " + namaWilayah + ".";
 
             pesan.append(judul, keterangan);
             daftarHarga.appendChild(pesan);
-
         } else if (dataTersaring.length === 0) {
             // Data tersedia, tetapi tidak cocok dengan pencarian.
             const pesan = document.createElement("p");
             pesan.textContent = "Komoditas tidak ditemukan.";
 
             daftarHarga.appendChild(pesan);
-
         } else {
             // Menampilkan kartu harga.
-            dataTersaring.forEach(item => {
+            dataTersaring.forEach((item) => {
                 const kartu = document.createElement("div");
                 kartu.className = "item-komoditas";
 
@@ -304,9 +284,7 @@ function tampilkanHarga(status = "normal") {
 
                 const tanggal = document.createElement("p");
                 tanggal.className = "tanggal-update";
-                tanggal.textContent =
-                    "Terakhir diperbarui: " +
-                    formatTanggal(item.tanggal_update);
+                tanggal.textContent = "Terakhir diperbarui: " + formatTanggal(item.tanggal_update);
 
                 kartu.append(judul, keterangan, nilai, tanggal);
                 daftarHarga.appendChild(kartu);
@@ -317,25 +295,18 @@ function tampilkanHarga(status = "normal") {
     // Informasi status di Beranda.
     if (statusHarga) {
         if (status === "error") {
-            statusHarga.textContent =
-                "Data harga gagal dimuat. Silakan coba lagi.";
-
+            statusHarga.textContent = "Data harga gagal dimuat. Silakan coba lagi.";
         } else if (!wilayah) {
             statusHarga.textContent =
                 "Silakan pilih wilayah untuk melihat harga komoditas yang tersedia.";
-
         } else if (dataHarga.length === 0) {
-            statusHarga.textContent =
-                "Belum ada data harga untuk " + namaWilayah + ".";
-
+            statusHarga.textContent = "Belum ada data harga untuk " + namaWilayah + ".";
         } else if (dataTersaring.length === 0) {
             statusHarga.textContent =
                 "Tidak ditemukan komoditas yang sesuai di " + namaWilayah + ".";
-
         } else {
             statusHarga.textContent =
-                "Menampilkan " + dataTersaring.length +
-                " data harga untuk " + namaWilayah + ".";
+                "Menampilkan " + dataTersaring.length + " data harga untuk " + namaWilayah + ".";
         }
     }
 }
@@ -360,17 +331,15 @@ if (tombolReset) {
 
 // Memulai program.
 if (pilihanWilayah) {
-    ambilDaftarWilayah().catch(error => {
+    ambilDaftarWilayah().catch((error) => {
         console.error(error);
 
         if (informasiWilayah) {
-            informasiWilayah.textContent =
-                "Daftar wilayah gagal dimuat.";
+            informasiWilayah.textContent = "Daftar wilayah gagal dimuat.";
         }
 
         if (statusHarga) {
-            statusHarga.textContent =
-                "Daftar wilayah gagal dimuat.";
+            statusHarga.textContent = "Daftar wilayah gagal dimuat.";
         }
     });
 }

@@ -19,3 +19,6 @@ Thumbs.db
 # Konfigurasi dan file pengujian lokal
 /buat_admin.php
 /tes_koneksi.php
+
+# Dependensi Node.js
+node_modules/
