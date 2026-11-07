@@ -1,3 +1,7 @@
+<?php
+$halamanAktif = 'harga.php';
+$deskripsiHeader = 'Informasi harga hasil perkebunan di Maluku.';
+?>
 <!DOCTYPE html>
 <html lang="id">
 
@@ -12,18 +16,8 @@
 
 <body>
 
-    <header>
-        <h1>Harga Komoditas Maluku</h1>
-        <p>Informasi harga hasil perkebunan di Maluku.</p>
-    </header>
 
-    <nav>
-        <a href="index.html">Beranda</a>
-        <a href="harga.php" aria-current="page">Harga Komoditas</a>
-        <a href="komoditas.html">Jenis Komoditas</a>
-        <a href="tentang.html">Tentang Pengelola</a>
-        <a href="login.php">Pengelola</a>
-    </nav>
+    <?php require __DIR__ . '/partials/header.php'; ?>
 
     <main>
         <section class="harga-terbaru">
@@ -78,12 +72,9 @@
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2026 Harga Komoditas Maluku</p>
-    </footer>
+    <?php require __DIR__ . '/partials/footer.php'; ?>
 
     <script src="js/harga.js" defer></script>
 
 </body>
 </html>
-```

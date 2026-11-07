@@ -1,3 +1,7 @@
+﻿<?php
+$halamanAktif = 'index.php';
+$deskripsiHeader = 'Informasi harga hasil perkebunan di Maluku.';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -6,22 +10,10 @@
     <title>Harga Komoditas Maluku</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
-    <!-- Bagian kepala website -->
-    <header>
-        <h1>Harga Komoditas Maluku</h1>
-        <p>Informasi harga hasil perkebunan di Maluku.</p>
-    </header>
-
-    <!-- Menu navigasi -->
-    <nav>
-        <a href="index.html" aria-current="page">Beranda</a>
-        <a href="harga.php">Harga Komoditas</a>
-        <a href="komoditas.html">Jenis Komoditas</a>
-        <a href="tentang.html">Tentang Pengelola</a>
-        <a href="login.php">Pengelola</a>
-    </nav>
+    <?php require __DIR__ . '/partials/header.php'; ?>
 
     <!-- Isi utama beranda -->
     <main>
@@ -30,7 +22,7 @@
         <section class="pengenalan hero-beranda">
             <div class="hero-teks">
                 <span class="label-hero">
-                    <span aria-hidden="true">🌿</span>
+                    <span aria-hidden="true">&#x1F33F;</span>
                     HARGA KOMODITAS MALUKU
                 </span>
 
@@ -46,7 +38,7 @@
                 </p>
 
                 <div class="hero-tombol">
-                    <a href="komoditas.html" class="tombol-utama">
+                    <a href="komoditas.php" class="tombol-utama">
                         Jelajahi Komoditas
                     </a>
                 </div>
@@ -56,7 +48,6 @@
                 <img src="images/hero-kopra.webp" alt="Kopra kering" width="640" height="480" loading="lazy" decoding="async">
                 <img src="images/hero-cengkeh.webp" alt="Cengkeh kering" width="547" height="365" loading="lazy" decoding="async">
                 <img src="images/hero-pala.webp" alt="Biji pala" width="738" height="414" loading="lazy" decoding="async">
-
             </div>
         </section>
 
@@ -137,35 +128,35 @@
                             <td>Kopra</td>
                             <td class="wilayah-harga">Belum dipilih</td>
                             <td>Belum tersedia</td>
-                            <td>—</td>
+                            <td>&mdash;</td>
                         </tr>
 
                         <tr>
                             <td>Biji Kakao</td>
                             <td class="wilayah-harga">Belum dipilih</td>
                             <td>Belum tersedia</td>
-                            <td>—</td>
+                            <td>&mdash;</td>
                         </tr>
 
                         <tr>
                             <td>Cengkeh</td>
                             <td class="wilayah-harga">Belum dipilih</td>
                             <td>Belum tersedia</td>
-                            <td>—</td>
+                            <td>&mdash;</td>
                         </tr>
 
                         <tr>
                             <td>Pala</td>
                             <td class="wilayah-harga">Belum dipilih</td>
                             <td>Belum tersedia</td>
-                            <td>—</td>
+                            <td>&mdash;</td>
                         </tr>
 
                         <tr>
                             <td>Bunga Pala</td>
                             <td class="wilayah-harga">Belum dipilih</td>
                             <td>Belum tersedia</td>
-                            <td>—</td>
+                            <td>&mdash;</td>
                         </tr>
                     </tbody>
                 </table>
@@ -192,9 +183,7 @@
     </main>
 
     <!-- Bagian bawah website -->
-    <footer>
-        <p>&copy; 2026 Harga Komoditas Maluku</p>
-    </footer>
+    <?php require __DIR__ . '/partials/footer.php'; ?>
 
     <script src="js/harga.js" defer></script>
 </body>

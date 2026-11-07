@@ -1,3 +1,7 @@
+﻿<?php
+$halamanAktif = 'tentang.php';
+$deskripsiHeader = 'Mengenal pengelola dan pengembang website.';
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -8,20 +12,8 @@
 </head>
 <body>
 
-    <!-- Bagian header -->
-    <header>
-        <h1>Harga Komoditas Maluku</h1>
-        <p>Mengenal pengelola dan pengembang website.</p>
-    </header>
 
-    <!-- Menu navigasi -->
-    <nav>
-        <a href="index.html">Beranda</a>
-        <a href="harga.php">Harga Komoditas</a>
-        <a href="komoditas.html">Jenis Komoditas</a>
-        <a href="tentang.html" aria-current="page">Tentang Pengelola</a>
-        <a href="login.php">Pengelola</a>
-    </nav>
+    <?php require __DIR__ . '/partials/header.php'; ?>
 
     <!-- Konten utama -->
     <main>
@@ -50,7 +42,7 @@
 
                 <h2>Cintya Larasati Tunjungsari</h2>
                 <h3>Web Developer</h3>
-                <p>Belajar • Berkembang • Memberi Manfaat</p>
+                <p>Belajar â€¢ Berkembang â€¢ Memberi Manfaat</p>
             </div>
 
             <!-- Kolom deskripsi pengelola -->
@@ -135,9 +127,7 @@
     </div>
 
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2026 Harga Komoditas Maluku</p>
-    </footer>
+    <?php require __DIR__ . '/partials/footer.php'; ?>
 
     <!-- JavaScript aksesibilitas modal foto -->
     <script src="js/tentang.js" defer></script>

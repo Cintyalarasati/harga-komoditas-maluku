@@ -1,6 +1,6 @@
 // ======================================
 // PENGATUR HALAMAN HARGA KOMODITAS
-// Digunakan oleh index.html dan harga.php
+// Digunakan oleh index.php dan harga.php
 // ======================================
 
 // Mengambil elemen dropdown wilayah.
@@ -222,7 +222,7 @@ function tampilkanHarga(status = "normal") {
         }
     }
 
-    // Tampilan tabel di index.html.
+    // Tampilan tabel di index.php.
     if (tabelHarga) {
         tabelHarga.replaceChildren();
 

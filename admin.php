@@ -241,7 +241,7 @@ $dataHarga = ambilHarga($koneksi, $wilayah);
     </header>
 
     <nav class="admin-nav">
-        <a href="index.html">Beranda</a>
+        <a href="index.php">Beranda</a>
         <a href="harga.php">Harga Komoditas</a>
 
         <form method="POST" action="logout.php" class="admin-logout-form">

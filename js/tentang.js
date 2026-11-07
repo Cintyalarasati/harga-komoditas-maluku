@@ -1,7 +1,7 @@
 
 // ======================================
 // AKSESIBILITAS MODAL FOTO PROFIL
-// Digunakan oleh tentang.html
+// Digunakan oleh tentang.php
 // ======================================
 
 const tombolBuka = document.getElementById("buka-foto");
