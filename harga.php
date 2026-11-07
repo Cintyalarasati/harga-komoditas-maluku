@@ -11,11 +11,22 @@ $deskripsiHeader = 'Informasi harga hasil perkebunan di Maluku.';
 
     <title>Harga Komoditas - Harga Komoditas Maluku</title>
 
+    <!-- SEO Meta Description -->
+    <meta name="description" content="Lihat informasi harga terbaru kopra, kakao, cengkeh, pala, dan bunga pala berdasarkan wilayah di Maluku.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.png" type="image/png">
+
+    <!-- Open Graph untuk pratinjau media sosial -->
+    <meta property="og:title" content="Harga Komoditas - Harga Komoditas Maluku">
+    <meta property="og:description" content="Informasi harga komoditas perkebunan berdasarkan wilayah di Maluku.">
+    <meta property="og:image" content="https://komoditas-maluku.com/images/pulau.webp">
+    <meta property="og:type" content="website">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-
 
     <?php require __DIR__ . '/partials/header.php'; ?>
 

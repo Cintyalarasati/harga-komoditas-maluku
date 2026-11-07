@@ -4,14 +4,29 @@ $deskripsiHeader = 'Mengenal pengelola dan pengembang website.';
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Tentang Pengelola - Harga Komoditas Maluku</title>
+
+    <!-- SEO Meta Description -->
+    <meta name="description" content="Kenali pengelola dan pengembang website Harga Komoditas Maluku serta tujuan pengembangan website informasi harga komoditas perkebunan.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.png" type="image/png">
+
+    <!-- Open Graph untuk pratinjau media sosial -->
+    <meta property="og:title" content="Tentang Pengelola - Harga Komoditas Maluku">
+    <meta property="og:description" content="Informasi mengenai pengelola dan pengembang website Harga Komoditas Maluku.">
+    <meta property="og:image" content="https://komoditas-maluku.com/images/pulau.webp">
+    <meta property="og:type" content="website">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
 
+<body>
 
     <?php require __DIR__ . '/partials/header.php'; ?>
 
@@ -42,7 +57,7 @@ $deskripsiHeader = 'Mengenal pengelola dan pengembang website.';
 
                 <h2>Cintya Larasati Tunjungsari</h2>
                 <h3>Web Developer</h3>
-                <p>Belajar â€¢ Berkembang â€¢ Memberi Manfaat</p>
+                <p>Belajar &bull; Berkembang &bull; Memberi Manfaat</p>
             </div>
 
             <!-- Kolom deskripsi pengelola -->

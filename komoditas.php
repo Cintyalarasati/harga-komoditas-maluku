@@ -4,10 +4,25 @@ $deskripsiHeader = 'Mengenal hasil perkebunan unggulan Maluku.';
 ?>
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Jenis Komoditas - Harga Komoditas Maluku</title>
+
+    <!-- SEO Meta Description -->
+    <meta name="description" content="Kenali lima komoditas perkebunan Maluku, yaitu kopra, biji kakao, cengkeh, pala, dan bunga pala.">
+
+    <!-- Favicon -->
+    <link rel="icon" href="images/favicon.png" type="image/png">
+
+    <!-- Open Graph untuk pratinjau media sosial -->
+    <meta property="og:title" content="Jenis Komoditas - Harga Komoditas Maluku">
+    <meta property="og:description" content="Mengenal berbagai hasil perkebunan unggulan Maluku.">
+    <meta property="og:image" content="https://komoditas-maluku.com/images/pulau.webp">
+    <meta property="og:type" content="website">
+
     <link rel="stylesheet" href="css/style.css">
 </head>
 
